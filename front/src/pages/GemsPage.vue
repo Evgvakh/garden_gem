@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <Header :gems="gems" v-model="searchQuery" placeholder="Find your gem by name" />
+        <Header v-model="searchQuery" placeholder="Find your gem by name" />
         <div class="recently_added">
             <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:50%; left: 55%"
                 strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
@@ -119,10 +119,7 @@ export default {
         },
     },
 
-    watch: {
-        // category() {
-        //     console.log(this.category);
-        // }
+    watch: {        
     }
 }
 
@@ -203,14 +200,14 @@ p {
     margin-right: 2em;
     padding: 0.3em;
     cursor: pointer;
-    transition: all .2s ease-in;
+    transition: all .3s ease-out;
 }
 
 .cat_button:hover {
     background-color: #77262bbb;
     border: none;
     color: white;
-    border-radius: 7px;    
+    border-radius: 3px;    
 }
 
 .weight {}

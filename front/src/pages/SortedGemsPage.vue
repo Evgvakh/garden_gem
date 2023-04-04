@@ -1,58 +1,68 @@
 <template>
-    
+    <Header v-model="searchQuery" placeholder="Search your gem here" />
+    <div class="container">
+        <ItemsCards v-if="this.sortedAndSearchedPosts.length > 0" :gems="this.sortedAndSearchedPosts" />
+    </div>
 </template>
 
 <script>
-import axios from '@/axios';
+import axios from "@/axios";
+import Header from "@/components/header/Header.vue";
+import ItemsCards from "@/components/items/ItemsCards.vue";
 
-export default {    
-    
+export default {
+    components: {
+        Header,
+        ItemsCards
+    },
     data() {
-            return {
-                items: [],
-                gems: [],
-                isLoading: false,                
-                limit: 20,
-                offset: 0
-         }   
+        return {            
+            gems: [],
+            isLoading: false,
+            limit: 20,
+            offset: 0,
+            categoryNumber: 0,
+            searchQuery: "",
+        };
     },
-    methods: {        
-        async fetchCarouselItems() {
+    methods: {
+        async fetchItems() {
             this.isLoading = true;
-            const { data } = await axios.get('/gemscarousel');
-            this.items = data;
-            console.log(this.items)
-            this.isLoading = false;
-        },
-
-        async fetchItems(id_cat) {
-            this.isLoading = true;
-            const { data } = await axios.get(`/gems/${id_cat}`);
+            const { data } = await axios.get(`/gems/${this.categoryNumber}`);
             this.gems = data;
-            console.log(this.gems)
+            console.log(this.gems);
             this.isLoading = false;
         },
+
+        setCategoryNumber() {
+            this.categoryNumber = this.$route.params.id
+        }
     },
 
-    async mounted() {
-        // await this.fetchCarouselItems()
-        // await this.fetchItems(this.category);                    
+    mounted() {
+        this.setCategoryNumber();
+        this.fetchItems();
     },
 
     computed: {
-        
+        sortedAndSearchedPosts() {
+            return this.gems.filter((gem) =>
+                gem.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+            );
+        },
     },
 
     watch: {
-        
-    }
-}
-
-
+        async "$route.params.id"() {
+            this.categoryNumber = this.$route.params.id;
+            await this.fetchItems();
+        },
+    },
+};
 </script>
 
 <style scoped>
-    h4 a:hover {
-        font-weight: 500;
-    }
+.container {
+    margin-top: 10vh;
+}
 </style>

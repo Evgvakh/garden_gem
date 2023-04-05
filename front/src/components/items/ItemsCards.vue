@@ -16,7 +16,9 @@ export default {
     },
 
     props: {
-        gems: [],
+        gems: {
+            type: Array
+        },
 
     },
     data() {

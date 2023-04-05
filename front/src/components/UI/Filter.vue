@@ -3,7 +3,7 @@
         <q-range
         v-model="range"
         :min="0"
-        :max="max + 5"
+        :max="max + 1"
         :step="step"
         label-always
         color="red-10"

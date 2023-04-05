@@ -33,15 +33,17 @@
     <div class="cats">
         <button class="cat_button" v-for="cat in cats" @click="$router.push(`/gems/${cat.id}`)"> {{ cat.name }}</button>
     </div>
-    <Filter v-model="priceQuery" :max="maxPrice" step="5" />
-    <Filter v-model="weightQuery" :max="maxWeight" step="0.025" />
-    <div class="checkbox-block cat-filter">        
-        <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name" v-model="filterCats" @addCat="addCatToArray" />
+    <Filter v-model="priceQuery" :max="maxPrice" step=5 />
+    <Filter v-model="weightQuery" :max="maxWeight" step=0.025 />
+    <div class="checkbox-block cat-filter">
+        <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name" v-model="filterCats"
+            @addCat="addCatToArray" />
     </div>
     <div class="checkbox-block cut-filter">
-        <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item" />
+        <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"  v-model="filterCuts"
+            @addCat="addCutToArray"/>
     </div>
-    <ItemsCards v-if="!isLoading && this.filteredGems.length > 0" :gems="this.filteredGems" />
+    <ItemsCards v-if="!isLoading && this.filteredCutGems.length > 0" :gems="this.filteredCutGems" />
     <div v-else class="search_failed">
         <h3>The search has not given any results</h3>
     </div>
@@ -69,6 +71,7 @@ export default {
             cats: [],
             filterCats: [],
             cut: [],
+            filterCuts: [],
             isLoading: false,
             limit: 20,
             offset: 0,
@@ -133,14 +136,14 @@ export default {
             const sortedArr = [...this.gems].sort((gem1, gem2) => {
                 return gem2.price - gem1.price
             })
-            this.maxPrice = sortedArr[0].price;
+            this.maxPrice = Number(sortedArr[0].price);
         },
 
         calculateMaxWeight() {
             const sortedArr = [...this.gems].sort((gem1, gem2) => {
                 return gem2.weight - gem1.weight
             })
-            this.maxWeight = sortedArr[0].weight.toFixed(2);
+            this.maxWeight = Number(sortedArr[0].weight.toFixed(2));
         },
 
         addCatToArray(cat) {
@@ -150,13 +153,28 @@ export default {
                 this.filterCats.splice(this.filterCats.indexOf(cat), 1)
             }
         },
+
+        addCutToArray(cut) {
+            if (!this.filterCuts.includes(cut)) {
+                this.filterCuts.push(cut);
+            } else {
+                this.filterCuts.splice(this.filterCuts.indexOf(cut), 1)
+            }
+        },
+
         getCut() {
             this.gems.map(gem => {
                 this.cut.push(gem.cut)
-            })
-            console.log(this.cut)
+            })            
+            let newArr = this.cut.reduce(function (accumulator, currentValue) {
+                if (accumulator.indexOf(currentValue) === -1) {
+                    accumulator.push(currentValue);
+                }
+                return accumulator;
+            }, []);
+            this.cut = newArr;
         }
-        
+
     },
 
     async mounted() {
@@ -188,7 +206,18 @@ export default {
             } else {
                 return this.searchedAndFilteredGems;
             }
+        },
+
+        filteredCutGems() {
+            if (this.filterCuts.length > 0) {
+                return this.filteredGems.filter(item => {
+                    return this.filterCuts.some(cut => item.cut.includes(cut))
+                })
+            } else {
+                return this.filteredGems;
+            }
         }
+
     },
 
     watch: {

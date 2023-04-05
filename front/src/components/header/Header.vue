@@ -37,7 +37,9 @@ export default {
     padding: 1.2em 3em;
     position: fixed;
     top: 0; left: 17%;
-    z-index: 100;       
+    z-index: 100;
+    -webkit-box-shadow: 0px 6px 12px -6px #000000; 
+    box-shadow: 0px 6px 12px -6px #000000;       
 }
 
 .header_container {

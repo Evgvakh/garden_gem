@@ -17,6 +17,12 @@ import DataView from "primevue/dataview";
 import DataViewLayoutOptions from "primevue/dataviewlayoutoptions";
 import Divider from "primevue/divider";
 import InputText from "primevue/inputtext";
+import Slider from "primevue/slider";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faCalendarDays, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar } from '@fortawesome/free-regular-svg-icons';
+
 
 
 
@@ -30,6 +36,10 @@ app.component("DataView", DataView);
 app.component("DataViewLayoutOptions", DataViewLayoutOptions);
 app.component("Divider", Divider);
 app.component("InputText", InputText);
+app.component("Slider", Slider);
+app.component("font-awesome-icon", FontAwesomeIcon);
+
+library.add(faCalendar, faCheck);
 
 app.use(store).use(router).use(PrimeVue).use(Quasar, {
     plugins: {},

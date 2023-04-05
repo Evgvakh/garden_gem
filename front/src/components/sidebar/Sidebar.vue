@@ -9,12 +9,20 @@
         />
         <SideList v-if="visibleSection == 'gems'" @changeBackground="editBackground"/>
         <ListWrapper
+        class="item"                  
+        :title='"Contacts"' 
+        @modify="setVisibleSection"
+        @click.stop="$router.push('/contacts')"
+        @click="setVisibleSection('contacts')"        
+        />        
+        <ListWrapper
         class="item"                 
-        :title='"About"' 
+        :title='"About us"' 
         @modify="setVisibleSection"
         @click.stop="$router.push('/about')"
         @click="setVisibleSection('about')"
         />
+        
     </div>
 </template>
 

@@ -44,10 +44,7 @@ export const getAllItems = async (req, res) => {
       } else {
         console.log("Connected to DB");
       }
-    });
-    console.log(req.body.params);
-    const limit = req.body.params.limit;
-    const offset = req.body.params.offset;
+    });     
     const request = `SELECT items.*,                    
                         categories.name AS category,
                         colors.name AS color,
@@ -63,10 +60,7 @@ export const getAllItems = async (req, res) => {
                         join cut on items.id_cut = cut.id
                         join origin on items.id_origin = origin.id
                         join clarity on items.id_clarity = clarity.id
-                        join treatment on items.id_treatment = treatment.id
-                        
-                        LIMIT ${limit} OFFSET ${offset}`;
-    
+                        join treatment on items.id_treatment = treatment.id`;    
     
     const items = await getItemsWithImages(request, connection);    
     res.json(items);
@@ -103,8 +97,8 @@ export const getCarouselItems = async (req, res) => {
                         join origin on items.id_origin = origin.id
                         join clarity on items.id_clarity = clarity.id
                         join treatment on items.id_treatment = treatment.id
-                        LIMIT 15`
-                        ;
+                        ORDER BY added DESC
+                        LIMIT 15`;
 
     const items = await getItemsWithImages(request, connection);
     res.json(items);

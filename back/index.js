@@ -35,7 +35,7 @@ app.post("/upload", upload.single("img"), (req, res) => {
   });
 });
 
-app.post("/gems", getAllItems);
+app.get("/gems", getAllItems);
 app.get("/gemscarousel", getCarouselItems);
 app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);

@@ -5,16 +5,16 @@
         </div>
         <div class="text-block">
             <h4>
-                <a @click="$router.push(`/collection/${gem.id}`)">{{ gem.name.toUpperCase() }} {{ gem.cut }} cut {{ gem.weight }} {{ gem.origin }}</a>
+                <a @click="$router.push(`/collection/${gem.id}`)">{{ gem.name.toUpperCase() }} {{ gem.cut }} cut {{ gem.weight.toFixed(2) }} ct., {{ gem.origin }}</a>
             </h4>
             <div class="price_weight">
                 <div>
                     <p>Weight</p>
-                    <h5>{{ gem.weight }} ct.</h5>
+                    <h5>{{ gem.weight.toFixed(2) }} ct.</h5>
                 </div>
                 <div>
                     <p>Price <span>(per ct.)</span></p>
-                    <h5> $ {{ gem.price }} <span>({{ gem.price / gem.weight }})</span></h5>
+                    <h5> ${{ gem.price }} <span>(${{ (gem.price / gem.weight).toFixed(0) }})</span></h5>
                 </div>                
             </div>
         </div>        
@@ -71,14 +71,15 @@
     }
 
     h4 {
-        font-size: 20px;
+        font-size: 18px;
         cursor: pointer;
-        margin-bottom: 0.6em;
+        margin-bottom: 0.7em;
         font-weight: 500; 
     }
 
     h5 {
         font-size: 16px;
+        line-height: 1em;
         margin: 0.5em 0;
     }
 

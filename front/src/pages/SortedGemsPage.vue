@@ -1,7 +1,7 @@
 <template>
     <Header v-model="searchQuery" placeholder="Search your gem here" />
     <div class="container">
-        <ItemsCards v-if="this.sortedAndSearchedPosts.length > 0" :gems="this.sortedAndSearchedPosts" />
+        <ItemsCards v-if="this.searchedGems.length > 0" :gems="this.searchedGems" />
     </div>
 </template>
 
@@ -23,6 +23,10 @@ export default {
             offset: 0,
             categoryNumber: 0,
             searchQuery: "",
+            priceQuery: {
+                min: 0,
+                max: 1000000
+            }
         };
     },
     methods: {
@@ -45,11 +49,16 @@ export default {
     },
 
     computed: {
-        sortedAndSearchedPosts() {
+        searchedGems() {
             return this.gems.filter((gem) =>
                 gem.name.toLowerCase().includes(this.searchQuery.toLowerCase())
             );
         },
+        // searchedAnFilteredGems() {
+        //     return this.searchedGems.filter((gem) => {
+        //         return gem.price >= this.priceQuery.minPrice && gem.price <= this.priceQuery.maxPrice 
+        //     })
+        // }
     },
 
     watch: {

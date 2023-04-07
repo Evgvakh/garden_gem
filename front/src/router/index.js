@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import HomePage from '@/pages/HomePage';
 import GemsPage from "@/pages/GemsPage";
 import SortedGemsPage from '@/pages/SortedGemsPage';
+import Gem from '@/pages/Gem.vue';
 
 const routes = [
   {
@@ -12,12 +13,17 @@ const routes = [
   {
     path: "/gems",
     name: "gems",
-    component: GemsPage,    
+    component: GemsPage,
   },
   {
     path: "/gems/:id",
     name: "sortedGems",
-    component: SortedGemsPage    
+    component: SortedGemsPage,
+  },
+  {
+    path: "/collection/:id",
+    name: "gem",
+    component: Gem,
   },
 ];
 
@@ -26,4 +32,4 @@ const router = createRouter({
   routes
 })
 
-export default router
+export default router;

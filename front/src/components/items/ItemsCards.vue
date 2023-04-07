@@ -1,5 +1,5 @@
 <template>    
-    <div class="container">        
+    <div class="items-container">        
         <div class="items">
             <Item class="item" v-for="item in gems" :gem="item" />
         </div>
@@ -19,24 +19,17 @@ export default {
         gems: {
             type: Array
         },
-
     },
-    data() {
-        return {
-            
-        }
-    }
 }
 </script>
 
 <style scoped>
 
-.container {
-    padding: 4em 3em 1em 5em;
-    background-color: #77262bbb;
-    -webkit-box-shadow: 0px -3px 13px -4px #000000; 
-    box-shadow: 0px -3px 13px -4px #000000;
-    /* background-color: #28272686; */
+.items-container {    
+    padding: 3em 1em 1em 1em;    
+    background-color: #eee0e149;
+    -webkit-box-shadow: inset 0px 11px 15px -12px #77262b49; 
+    box-shadow: inset 0px 11px 15px -12px #77262b49;    
 }
  .items {
     display: flex;
@@ -45,6 +38,5 @@ export default {
     flex-wrap: wrap;
     justify-content:space-evenly;
     align-items: center;
-}
- 
+} 
 </style>

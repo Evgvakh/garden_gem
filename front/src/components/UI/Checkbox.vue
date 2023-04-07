@@ -2,7 +2,6 @@
     <div class="checkbox-container">
         <div class="checkbox">
             <input type="checkbox" @change="filterCat" :id="label" :value="label">
-
             <div class="fake-input"></div>
             <font-awesome-icon class="icon" icon="fa-solid fa-check" />
         </div>
@@ -21,7 +20,6 @@ export default {
         }
     },
 
-
     methods: {
         filterCat(e) {
             this.$emit('addCat', e.target.value)
@@ -31,22 +29,28 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 .checkbox-container {
     display: flex;
     align-items: center;
+    margin-bottom: 0.2em;
 }
 
 .checkbox-container label {
-    line-height: 1em;
+    line-height: 1.5em;
     margin-left: 0.4em;
-    font-size: 16px;
+    font-size: 15px;
+    color: #563838;
+    font-family: 'Open Sans', sans-serif;
     text-transform: capitalize;
 }
 
 .checkbox {
-    width: 23px;
-    height: 23px;
-    border: 1px solid black;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgb(60, 60, 65);
+    border-radius: 13px;
     position: relative;
     padding: 0;
 }
@@ -61,19 +65,18 @@ export default {
 }
 
 .checkbox .icon {
-    font-size: 23px;
+    font-size: 15px;
     position: absolute;
-    top: 0;
-    left: 5%;
-    transition: all .1s ease-in;
+    top: 11%;
+    left: 10%;
+    color: #563838;  
+    transition: all .2s ease-in;
 }
 
 input:not(:checked)~.icon {
     opacity: 0;
 }
 
-
 input:checked~.icon {
     opacity: 1;
-}
-</style>
+}</style>

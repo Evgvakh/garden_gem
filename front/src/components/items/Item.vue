@@ -1,26 +1,18 @@
 <template>
     <div class="item">
         <div class="item-image" :style="{ backgroundImage: 'url(http://localhost:8081/uploads/img/IMG_0727.jpg)'}">
-
         </div>
         <div class="text-block">
             <h4>
-                <a @click="$router.push(`/collection/${gem.id}`)">{{ gem.name.toUpperCase() }} {{ gem.cut }} cut {{ gem.weight.toFixed(2) }} ct., {{ gem.origin }}</a>
+                <a @click="$router.push(`/collection/${gem.id}`)"><span class="start">{{ gem.color }} {{ gem.category }}</span> {{ gem.cut }} cut {{ gem.weight.toFixed(2) }} ct., {{ gem.origin }}</a>
             </h4>
-            <div class="price_weight">
-                <div>
-                    <p>Weight</p>
-                    <h5>{{ gem.weight.toFixed(2) }} ct.</h5>
-                </div>
+            <div class="price_weight">                
                 <div>
                     <p>Price <span>(per ct.)</span></p>
-                    <h5> ${{ gem.price }} <span>(${{ (gem.price / gem.weight).toFixed(0) }})</span></h5>
+                    <h5> ${{ (gem.price * gem.weight).toFixed(0) }} <span>(${{ gem.price  }})</span></h5>
                 </div>                
             </div>
-        </div>        
-        <div class="description">
-            <p>{{ gem.description }}</p>
-        </div>
+        </div> 
     </div>
 </template>
 
@@ -36,33 +28,40 @@
 </script>
 
 <style scoped>
+    @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
     .item {
         -webkit-box-shadow: 0px 7px 15px -6px rgba(0, 0, 0, 0.815); 
         box-shadow: 0px 7px 15px -6px rgba(0,0,0,0.815);    
         width: 22%;
         margin-bottom: 3em;
-        height: 320px;
+        height: 280px;
         transition: all .3s ease;
         background-color: aliceblue; 
-        border-radius: 6px;           
+        border-radius: 6px;
+        font-family: 'Open Sans', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
     }
 
     .item:hover {
-        transform: scale(1.01);
-        -webkit-box-shadow: 0px 7px 25px -6px rgba(0, 0, 0, 0.815); 
-        box-shadow: 0px 7px 25px -6px rgba(0,0,0,0.815);
+        transform: scale(1.002);
+        -webkit-box-shadow: 0px 7px 25px -8px rgba(0, 0, 0, 0.815); 
+        box-shadow: 0px 7px 25px -8px rgba(0,0,0,0.815);
     }
     .item-image {
         width: 100%;
         background-position: center center;
         background-repeat: no-repeat;
         background-size:cover;
-        height: 45%;
+        height: 55%;
     }
 
     .text-block {
-        padding: 1em;        
-        border-bottom: 1px solid rgba(150, 141, 141, 0.541);
+        padding: 1em;
+        height: 45%;
     }  
 
     h4, h5, p, span {
@@ -85,6 +84,7 @@
 
     .price_weight {
         display: flex;
+        justify-self: flex-end;
     }
 
     .price_weight div:nth-of-type(1) {
@@ -97,6 +97,12 @@
 
     .description {
         padding: 1em;
+    }
+
+    .text-block span.start {
+        text-transform: capitalize;
+        font-style: normal;
+        color: #121212;
     }
 
 </style>

@@ -20,11 +20,8 @@ import InputText from "primevue/inputtext";
 import Slider from "primevue/slider";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCalendarDays, faCheck } from "@fortawesome/free-solid-svg-icons";
-import { faCalendar } from '@fortawesome/free-regular-svg-icons';
-
-
-
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import Image from "primevue/image";
 
 const app = createApp(App);
 
@@ -38,8 +35,9 @@ app.component("Divider", Divider);
 app.component("InputText", InputText);
 app.component("Slider", Slider);
 app.component("font-awesome-icon", FontAwesomeIcon);
+app.component("Image", Image);
 
-library.add(faCalendar, faCheck);
+library.add(faCheck);
 
 app.use(store).use(router).use(PrimeVue).use(Quasar, {
     plugins: {},

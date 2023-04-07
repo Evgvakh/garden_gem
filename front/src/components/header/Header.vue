@@ -1,10 +1,19 @@
 <template>
     <div class="header">
         <div class="header_container">
-            <div class="input_search">
-                <input type="text" :value="modelValue" @input="updateInput" :placeholder="placeholder" />
+            <div v-if="isSearchNeeded" class="input_search">
+                <input 
+                    type="text" 
+                    :value="modelValue" 
+                    @input="updateInput" 
+                    :placeholder="placeholder" 
+                />
             </div>
-            <div class="logo"><a @click="$router.push('/')">GardenGem</a></div>
+            <div class="logo">
+                <a 
+                    @click="$router.push('/')"
+                >Gem Garden</a>
+            </div>
         </div>
     </div>
 </template>
@@ -17,7 +26,10 @@ export default {
             type: [String, Number],
             required: true,
         },
-        placeholder: ''
+        placeholder: '',
+        isSearchNeeded: {
+            type: Boolean
+        }
     },
 
     methods: {
@@ -31,10 +43,8 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Lilita+One&display=swap');
 .header {
-    width: 83%;
-    /* background-color: #282726; */
-    background-color: #563838;    
-    padding: 1.2em 3em;
+    width: 83%;    
+    background-color: #563838; 
     position: fixed;
     top: 0; left: 17%;
     z-index: 100;
@@ -43,10 +53,12 @@ export default {
 }
 
 .header_container {
+    width: 85%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%; 
+    padding: 1.5em 0;   
+    margin: 0 auto; 
 }
 
 .search_item {
@@ -57,11 +69,12 @@ export default {
     padding: 0.4em;
     outline: none;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     font-size: 16px;
+    line-height: 1em;
 }
 .logo {
-    
+    justify-self: flex-end;
 }
 
 .logo a {

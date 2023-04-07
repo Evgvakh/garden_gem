@@ -2,7 +2,7 @@
   <div class="app">
     <Sidebar v-if="width > 1100" class="sidebar" @newcat="categoryChange" />
     <div :class="[width > 1100 && width != 0 ? 'router' : 'router_resize']">
-      <router-view  :categoryChosen="categoryToShow"></router-view>
+      <router-view :categoryChosen="categoryToShow"></router-view>
     </div>
   </div>
 </template>
@@ -18,6 +18,7 @@ export default {
 
   data() {
     return {
+      gems: [],
       cats: [],
       categoryToShow: 0,
       width: 0
@@ -25,9 +26,9 @@ export default {
   },
 
   provide() {
-    let cats = {}   
+    let cats = {}
     Object.defineProperty(cats, 'type', { enumerable: true, get: () => this.cats })
-    return { cats }   
+    return { cats }
   },
 
   methods: {
@@ -38,32 +39,46 @@ export default {
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-      const { data } = await axios.post("/upload", formData);      
+      const { data } = await axios.post("/upload", formData);
     },
 
-    async fetchCats() {
-      const { data } = await axios.get('/cats')      
-      this.cats = data;      
+    async fetchItems() {
+      const { data } = await axios.get('/gems')
+      this.gems = data;
     },
 
     categoryChange(id) {
-      this.categoryToShow = id; 
+      this.categoryToShow = id;
       console.log(id)
     },
 
     updateWidth() {
       this.width = window.innerWidth;
-  },
+    },
+
+    getCats() {
+      this.gems.map((gem, i) => {        
+        this.cats.push(gem.id_category+gem.category);
+      })
+      let newArr = this.cats.reduce(function (accumulator, currentValue) {
+        if (accumulator.indexOf(currentValue) === -1) {
+          accumulator.push(currentValue);
+        }
+        return accumulator;
+      }, []);
+      this.cats = newArr;
+      console.log(this.cats)
+    },
   },
 
-  mounted() {
-    this.fetchCats()
-    
+  async mounted() {
+    await this.fetchItems();
+    this.getCats();
   },
 
   created() {
     window.addEventListener('resize', this.updateWidth);
-    this.updateWidth()    
+    this.updateWidth()
   }
 };
 </script>
@@ -71,7 +86,7 @@ export default {
 <style>
 .app {
   display: flex;
-  height: 100vh;    
+  height: 100vh;
 }
 
 .sidebar {
@@ -83,6 +98,6 @@ export default {
   margin-left: 17%;
   width: 83%;
   height: 100vh;
-  overflow-y: scroll;   
+  overflow-y: scroll;
 }
 </style>

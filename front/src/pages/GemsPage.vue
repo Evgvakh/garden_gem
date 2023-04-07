@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <Header v-model="searchQuery" placeholder="Find your gem by name" />
+        <Header v-model="searchQuery" placeholder="Find your gem by name" :isSearchNeeded="true"/>
         <div class="recently_added">
-            <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:50%; left: 55%"
+            <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:45%; left: 55%"
                 strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             <h3>Recently added</h3>
             <Carousel v-if="!isLoading" :value="items" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions"
@@ -15,38 +15,50 @@
                         </div>
                         <div>
                             <h4 class=""><a style="cursor: pointer;"
-                                    @click="$router.push(`/collection/${slotProps.data.id}`)">{{
-                                        slotProps.data.name.toUpperCase() }}</a></h4>
+                                    @click="$router.push(`/collection/${slotProps.data.id}`)">{{ slotProps.data.color }} {{
+                                        slotProps.data.category }}</a></h4>
                             <div class="price_weight">
                                 <h6 class="mt-0 mb-1">${{ slotProps.data.price }}</h6>
                                 <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
-                            </div>
-                            <div class="mt-2">
-                                <p>{{ slotProps.data.description }}</p>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                 </template>
             </Carousel>
         </div>
     </div>
-    <div class="cats">
-        <button class="cat_button" v-for="cat in cats" @click="$router.push(`/gems/${cat.id}`)"> {{ cat.name }}</button>
+    <div class="gemspage-wrapper">
+        <div v-if="!isLoading" class="cats">
+            <button class="cat_button" v-for="cat in cats" @click="$router.push(`/gems/${cat.id}`)"> {{ cat.name }}</button>
+        </div>
+        <div v-if="!isLoading" class="filter-block">
+            <div class="filters">
+                <div class="filter-container">
+                    <div class="label"><p>Price</p></div>
+                    <Filter class="filter filter-price" v-model="priceQuery" :max="maxPrice" step="5" />
+                </div>
+                <div class="filter-container">
+                    <div class="label"><p>Weight</p></div>
+                    <Filter class="filter filter-weight" v-model="weightQuery" :max="maxWeight" step=0.025 />
+                </div>
+            </div>
+            <div class="checkboxes">
+                <div><p>Gem</p></div>
+                <div class="checkbox-block cat-filter">
+                    <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name" v-model="filterCats"
+                        @addCat="addCatToArray" />
+                </div>
+                <div><p>Cut</p></div>
+                <div class="checkbox-block cut-filter">
+                    <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"  v-model="filterCuts"
+                        @addCat="addCutToArray"/>
+                </div>
+            </div>
+        </div>
+        <ItemsCards v-if="!isLoading && this.filteredCutGems.length > 0" :gems="this.filteredCutGems" />
+        <FailedSearch v-else-if="this.filteredCutGems.length == 0 && !isLoading"/>
     </div>
-    <Filter v-model="priceQuery" :max="maxPrice" step=5 />
-    <Filter v-model="weightQuery" :max="maxWeight" step=0.025 />
-    <div class="checkbox-block cat-filter">
-        <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name" v-model="filterCats"
-            @addCat="addCatToArray" />
-    </div>
-    <div class="checkbox-block cut-filter">
-        <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"  v-model="filterCuts"
-            @addCat="addCutToArray"/>
-    </div>
-    <ItemsCards v-if="!isLoading && this.filteredCutGems.length > 0" :gems="this.filteredCutGems" />
-    <div v-else class="search_failed">
-        <h3>The search has not given any results</h3>
-    </div>
+    
 </template>
 
 <script>
@@ -55,13 +67,15 @@ import ItemsCards from '@/components/items/ItemsCards.vue'
 import Header from '@/components/header/Header.vue';
 import Filter from '@/components/UI/Filter.vue';
 import Checkbox from '@/components/UI/Checkbox.vue';
+import FailedSearch from '@/components/FailedSearch.vue';
 
 export default {
     components: {
         ItemsCards,
         Header,
         Filter,
-        Checkbox
+        Checkbox,
+        FailedSearch
     },
 
     data() {
@@ -231,8 +245,6 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-* {}
-
 h3 {
     line-height: 1em;
     margin: 0;
@@ -244,27 +256,33 @@ h3 {
 h4 a {
     font-family: 'PT Serif', serif;
     font-size: 22px;
+    text-transform: capitalize;
 }
 
 h4 a:hover {
     font-weight: 500;
 }
 
-h4,
-h6,
-p {
-    margin: 0;
-    padding: 0;
+* p {
     font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0; 
+}
+
+.container h4, .container h6, .container p {       
     color: white;
+    margin: 0; padding: 0;
 }
 
 .container {
     margin: 0 auto;
 }
 
-.recently_added {
-    /* background-color: #563838d0; */
+.gemspage-wrapper {
+    width: 85%;
+    margin: 0 auto;
+}
+.recently_added {    
     background-color: rgb(253, 253, 253);
     margin-top: 10vh;
 }
@@ -273,7 +291,7 @@ p {
     padding: 0;
     margin: 0 2em;
     background-color: #77262bbb;
-    height: 200px;
+    height: 160px;
 }
 
 .price_weight {
@@ -284,32 +302,35 @@ p {
 }
 
 .cats {
-    padding: 2em;
-    margin: 2em 0;
+    padding: 2em 0;       
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    background-color: #eee0e149;
 }
 
 .cat_button {
     background-color: transparent;
-    border: 1px solid #77262bbb;
+    border: 1px solid transparent; 
+    border-radius: 23px;
     color: #77262bbb;
     text-transform: uppercase;
+    font-family: 'Open Sans', sans-serif;
     font-weight: 500;
-    font-size: 16px;
-    width: 15%;
+    font-size: 14px;
+    width: 10%;
     margin-right: 2em;
-    padding: 0.3em;
+    padding: 0.1em;
     cursor: pointer;
-    transition: all .3s ease-out;
+    transition: color .3s ease-out;
+    transition: background .3s ease-out;
 }
 
 .cat_button:hover {
     background-color: #77262bbb;
     border: none;
     color: white;
-    border-radius: 3px;
+    
 }
 
 .weight {}
@@ -318,9 +339,54 @@ p {
 
 .checkbox-block {
     display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.8em;
 }
 
 .checkbox-block__item {
-    margin-left: 1.3em;
+    margin-right: 0.3em;
+    width: fit-content;
+    min-width: 20%;
+}
+
+.checkboxes div p {
+    margin-bottom: 0.3em;
+}
+
+.filter-block {    
+    background-color: #e0e8f349;
+    border-top: 1px solid rgba(168, 149, 149, 0.329);
+    -webkit-box-shadow: 0px -1px 29px -15px #787878; 
+    box-shadow: 0px -1px 29px -15px #787878;
+    padding: 1em 3em;
+    display: flex;    
+}
+
+.filters  {
+    width: 40%;
+}
+
+.checkboxes {
+    width: 60%;
+}
+
+.filter-container {    
+    width: 70%;
+    margin-bottom: 0.4em;
+}
+
+.filter-container label {    
+    width: 20%;
+}
+
+.filter-container div p, .checkboxes div p {
+    color: #121212;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1em;
+    margin-bottom: 0.2em;
+}
+.filter {
+    width: 50%;
 }
 </style>

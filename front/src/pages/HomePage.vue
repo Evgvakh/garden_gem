@@ -18,9 +18,9 @@
 
                         <p class="p-text">Современны, 100% субъективны, говорим только по делу, достанем любой камень.</p>
                         <p class="p-line"><span class="line line-min"></span></p>
-                        <p class="p-text">Modern, 100% subjective, only about business, we'll get any gem you need</p>
+                        <p class="p-text">Modern, 100% subjective, only about business, we'll find any gem you need</p>
                     </div>
-                    <div class="content-back" :style="{backgroundImage: `url(${require('@/assets/main_background.jpg')})`}"></div>
+                    <div class="content-back" :style="{backgroundImage: `url('https://gemgarden.herokuapp.com/uploads/img/main_background.jpg')`}"></div>
                     <div class="fake-back" ></div> 
                 </div>
             </div>
@@ -106,22 +106,22 @@ video {
     font-family: 'M PLUS Rounded 1c', sans-serif;
     /* font-family: 'PT Serif', serif; */
     text-align: center;
-    font-size: 52px;
+    font-size: 48px;
     line-height: 1em;    
 }
 
 .content-container__img h2:nth-of-type(2) {
-    margin-bottom: 1.8em;
+    margin-bottom: 2.2em;
 }
 
 .p-text {
     font-family: 'M PLUS Rounded 1c', sans-serif;
     text-align: center;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .p-text:nth-of-type(4) {
-    margin-bottom: 2.6em;
+    margin-bottom: 3em;
 }
 
 .p-line {
@@ -165,5 +165,23 @@ span.line.line-min {
     width: 100%; height: 100%;
     background-color: #121212b6;
     z-index: 20;
+}
+
+@media (max-width: 800px) {
+    .content-container__img h2 {    
+    font-size: 38px;      
+}
+.p-text {    
+    font-size: 14px;
+}
+
+.content-container__img {    
+    color: antiquewhite;
+    padding: 9em 2em 2em 2em;
+    position: relative;
+    height: 100%;
+    background-color: transparent;
+    z-index: 30;
+}
 }
 </style>

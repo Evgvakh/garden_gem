@@ -9,8 +9,8 @@
         label-color="brown-5"
         track-color="grey-3" 
         label-text-color="white" 
-        track-size="2px" 
-        thumb-size="10px" 
+        track-size="1px" 
+        thumb-size="18px" 
         thumb-color="brown-5"
         @change="showValues" 
     />

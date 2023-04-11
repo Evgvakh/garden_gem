@@ -13,7 +13,7 @@
 <style scoped>
     @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito+Sans:wght@700&display=swap');
     .failed-search {
-        padding: 3em 5em;
+        padding: 3em 4em 6em 4em;
     }
 
     .failed-search h2 {
@@ -24,5 +24,11 @@
         letter-spacing: 1.2px;
         color: #563838;
         text-align: center;
+    }
+
+    @media (max-width: 460px) {
+        .failed-search h2 {
+            font-size: 36px;
+        }
     }
 </style>

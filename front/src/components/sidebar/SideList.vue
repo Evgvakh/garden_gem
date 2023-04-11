@@ -14,7 +14,8 @@ export default {
 
   methods: {
     clickHandler(item) {
-      this.$router.push(`/gems/${item}`);      
+      this.$router.push(`/gems/${item}`);
+      this.$emit('hideMobileSidebar')      
     }
   }
 };

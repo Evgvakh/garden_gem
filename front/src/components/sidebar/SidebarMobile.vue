@@ -1,8 +1,8 @@
 <template>
     <div class="sidebar" :class=backImageClass>        
         <ListWrapper class="item" :title='"Gems"' @modify="setVisibleSection" @click.stop="$router.push('/gems')"
-            @click="setVisibleSection('gems')" :isChevron="false"/>
-        <SideList v-if="visibleSection == 'gems'" @changeBackground="editBackground" />
+            @click="setVisibleSection('gems')" :isChevron="true" @listPopup="popUpList"/>
+        <SideList v-if="isListPopedUp" @hideMobileSidebar="$emit('setVisibility', false)"/>
         <ListWrapper class="item" :title='"Contacts"' @modify="setVisibleSection" @click.stop="$router.push('/contacts')"
             @click="setVisibleSection('contacts')" :isChevron="false"/>
         <ListWrapper class="item" :title='"About us"' @modify="setVisibleSection" @click.stop="$router.push('/about')"
@@ -13,6 +13,9 @@
             <p><a href="https://t.me/Joachim88" target="_blank">@Vadim</a></p>
             <p><font-awesome-icon icon="fa-brands fa-telegram" class="icon"/><a href="https://t.me/gemgarden" target="_blank">Telegram</a></p>
             <p><font-awesome-icon icon="fa-brands fa-youtube" class="icon"/><a href="https://www.youtube.com/@gemgarden" target="_blank">Youtube</a></p>
+        </div>
+        <div class="cross">
+            <font-awesome-icon icon="fa-solid fa-xmark" class="cross-icon" @click="$emit('setVisibility', false)"/>
         </div>
     </div>
 </template>
@@ -29,14 +32,18 @@ export default {
 
     data() {
         return {
-            visibleSection: '',
-            backImageClass: ''
+            isListPopedUp: false            
         }
     },
 
     methods: {
         setVisibleSection(item) {
             this.visibleSection = item;
+            this.$emit('setVisibility', false)
+        },
+
+        popUpList() {
+            this.isListPopedUp = !this.isListPopedUp
         }
     },
 
@@ -52,7 +59,7 @@ export default {
     height: 100vh;
     overflow-y: hidden;
     background-color: #282726;
-    padding: 5em 0;
+    padding: 5em 0;    
 }
 
 .item {
@@ -105,4 +112,14 @@ h2 .copyright {
     margin-right: 0.5em;
 }
 
+.cross {
+    position: absolute;
+    top: 2%; right: 6%;
+}
+
+.cross-icon {
+    color: #fff;
+    font-size: 34px;
+    cursor: pointer;
+}
 </style>

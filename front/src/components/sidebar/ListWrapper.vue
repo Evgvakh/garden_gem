@@ -1,16 +1,34 @@
 <template>
-  <div>
+  
     <div>
         <span>{{ title }}</span>
+        <font-awesome-icon icon="fa-solid fa-chevron-down" v-if="isChevron && isChevronUp" class="sidebar-chevron" @click.stop="changeChevron(true)"/>
+        <font-awesome-icon icon="fa-solid fa-chevron-up" v-if="isChevron && !isChevronUp" class="sidebar-chevron" @click.stop="changeChevron(false)"/>
     </div>
-  </div>
+  
 </template>
 
 <script>
 
 export default {
   props: {
-    title: ''    
+    title: '',
+    isChevron: {
+      type: Boolean
+    },      
+  },
+
+  data() {
+    return {
+      isChevronUp: true  
+    }
+  },
+
+  methods: {
+    changeChevron(bool) {
+      this.$emit('listPopup', bool)
+      this.isChevronUp = !this.isChevronUp
+    }
   }
 };
 </script>
@@ -22,15 +40,24 @@ export default {
     background-color:#ca564e3b;
     -webkit-box-shadow: inset 0px 0px 35px -18px #000000; 
     box-shadow: inset 0px 0px 35px -18px #000000;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2em;
   }
 
-  span {
-    padding-left: 2em;
+  span {    
     font-size: 20px;
     color: #ffffff;
     letter-spacing: 1.4px;
     text-transform: uppercase;
     font-weight: 700;
     font-family: 'PT Serif', serif;
+  }
+
+  .sidebar-chevron {
+    color: #ffffff;
+    font-size: 24px;
   }
 </style>

@@ -1,26 +1,26 @@
 <template>
     <div class="container">
-        <Header v-model="searchQuery" placeholder="Find your gem by name" :isSearchNeeded="true"/>
+        <Header v-model="searchQuery" placeholder="Find your gem by name" :isSearchNeeded="true" />
         <div class="recently_added">
             <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:45%; left: 55%"
                 strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             <h3 v-if="!isLoading">Recently added</h3>
             <Carousel v-if="!isLoading" :value="items" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions"
                 circular :autoplayInterval="4000">
-                
                 <template #item="slotProps">
                     <div class="item text-center">
-                        <div class="item__img" :style="{backgroundImage: `url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)`}">
+                        <div class="item__img"
+                            :style="{ backgroundImage: `url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)` }">
                             <div class="item__text">
-                            <h4><a style="cursor: pointer;"
-                                    @click="$router.push(`/collection/${slotProps.data.id}`)">{{ slotProps.data.color }} {{
-                                        slotProps.data.category }}</a></h4>
-                            <div class="price_weight">
-                                <h6 >${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
-                                <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
-                            </div>                            
-                        </div>                            
-                        </div>                        
+                                <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
+                                    slotProps.data.color }} {{
+        slotProps.data.category }}</a></h4>
+                                <div class="price_weight">
+                                    <h6>${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
+                                    <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </template>
             </Carousel>
@@ -33,31 +33,38 @@
         <div v-if="!isLoading" class="filter-block">
             <div class="filters">
                 <div class="filter-container">
-                    <div class="label"><p>Price</p></div>
+                    <div class="label">
+                        <p>Price</p>
+                    </div>
                     <Filter class="filter filter-price" v-model="priceQuery" :max="maxPrice" step="5" />
                 </div>
                 <div class="filter-container">
-                    <div class="label"><p>Weight</p></div>
+                    <div class="label">
+                        <p>Weight</p>
+                    </div>
                     <Filter class="filter filter-weight" v-model="weightQuery" :max="maxWeight" step=0.025 />
                 </div>
             </div>
             <div class="checkboxes">
-                <div><p>Gem</p></div>
-                <div class="checkbox-block cat-filter">
-                    <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name" v-model="filterCats"
-                        @addCat="addCatToArray" />
+                <div>
+                    <p>Gem</p>
                 </div>
-                <div><p>Cut</p></div>
+                <div class="checkbox-block cat-filter">
+                    <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name"
+                        v-model="filterCats" @addCat="addCatToArray" />
+                </div>
+                <div>
+                    <p>Cut</p>
+                </div>
                 <div class="checkbox-block cut-filter">
-                    <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"  v-model="filterCuts"
-                        @addCat="addCutToArray"/>
+                    <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"
+                        v-model="filterCuts" @addCat="addCutToArray" />
                 </div>
             </div>
         </div>
         <ItemsCards v-if="!isLoading && this.filteredCutGems.length > 0" :gems="this.filteredCutGems" />
-        <FailedSearch v-else-if="this.filteredCutGems.length == 0 && !isLoading"/>
+        <FailedSearch v-else-if="this.filteredCutGems.length == 0 && !isLoading" />
     </div>
-    
 </template>
 
 <script>
@@ -113,7 +120,12 @@ export default {
                     numScroll: 1
                 },
                 {
-                    breakpoint: '480px',
+                    breakpoint: '1100px',
+                    numVisible: 2,
+                    numScroll: 2
+                },
+                {
+                    breakpoint: '631px',
                     numVisible: 1,
                     numScroll: 1
                 }
@@ -124,21 +136,21 @@ export default {
         async fetchCarouselItems() {
             this.isLoading = true;
             const { data } = await axios.get('/gemscarousel');
-            this.items = data;            
+            this.items = data;
             this.isLoading = false;
         },
 
         async fetchItems() {
             this.isLoading = true;
             const { data } = await axios.get(`/gems`);
-            this.gems = data;            
+            this.gems = data;
             this.isLoading = false;
         },
 
         async fetchCats() {
             this.isLoading = true;
             const { data } = await axios.get(`/cats`);
-            this.cats = data;            
+            this.cats = data;
             this.isLoading = false;
         },
 
@@ -175,7 +187,7 @@ export default {
         getCut() {
             this.gems.map(gem => {
                 this.cut.push(gem.cut)
-            })            
+            })
             let newArr = this.cut.reduce(function (accumulator, currentValue) {
                 if (accumulator.indexOf(currentValue) === -1) {
                     accumulator.push(currentValue);
@@ -254,10 +266,22 @@ h3 {
 }
 
 @keyframes changeColor {
-    0% {color: black;}
-    25% { color: #563838;   }
-    50% { color: #77262bbb;}
-    75% {color: #ca564e3b;}
+    0% {
+        color: black;
+    }
+
+    25% {
+        color: #563838;
+    }
+
+    50% {
+        color: #77262bbb;
+    }
+
+    75% {
+        color: #ca564e3b;
+    }
+
     100% {
         color: black;
     }
@@ -276,12 +300,15 @@ h4 a:hover {
 * p {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
-    padding: 0; 
+    padding: 0;
 }
 
-.container h4, .container h6, .container p {       
+.container h4,
+.container h6,
+.container p {
     color: white;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
@@ -292,7 +319,8 @@ h4 a:hover {
     width: 85%;
     margin: 0 auto;
 }
-.recently_added {    
+
+.recently_added {
     background-color: rgb(253, 253, 253);
     margin-top: 12vh;
 }
@@ -300,10 +328,12 @@ h4 a:hover {
 .item {
     padding: 0;
     margin: 0 2em;
-    background-color: #563838; 
+    background-color: #563838;
     height: 220px;
     min-width: 200px;
+
 }
+
 .item__img {
     width: 100%;
     height: 100%;
@@ -311,17 +341,22 @@ h4 a:hover {
     background-position: center center;
     position: relative;
     overflow: hidden;
+    -webkit-box-shadow: inset 0px 0px 26px -6px #000000;
+    box-shadow: inset 0px 0px 26px -6px #000000;
 }
+
 .item__text {
     padding: 4em 0.2em;
     position: absolute;
     top: 100%;
     opacity: 0;
-    background: rgb(0,0,0);
+    background: rgb(0, 0, 0);
     background: linear-gradient(170deg, rgba(0, 0, 0, 0.541) 35%, rgba(0, 0, 0, 0.842) 68%);
-    width: 100%; height: 100%;
-    transition: all .3s ease-out;    
+    width: 100%;
+    height: 100%;
+    transition: all .4s ease-out;
 }
+
 .item__img:hover .item__text {
     top: 0;
     opacity: 1;
@@ -335,25 +370,27 @@ h4 a:hover {
 }
 
 .cats {
-    padding: 2em 0;       
+    padding: 2em 5em;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     background-color: #eee0e149;
 }
 
 .cat_button {
     background-color: transparent;
-    border: 1px solid transparent; 
+    border: 1px solid transparent;
     border-radius: 23px;
     color: #77262bbb;
     text-transform: uppercase;
     font-family: 'Open Sans', sans-serif;
     font-weight: 500;
     font-size: 14px;
-    width: 10%;
-    margin-right: 2em;
-    padding: 0.1em;
+    width: fit-content;
+    min-width: 13%;
+    margin-right: 0.7em;
+    margin-bottom: 0.6em;
+    padding: 0.3em;
     cursor: pointer;
     transition: color .3s ease-out;
     transition: background .3s ease-out;
@@ -361,14 +398,8 @@ h4 a:hover {
 
 .cat_button:hover {
     background-color: #77262bbb;
-    border: none;
     color: white;
-    
 }
-
-.weight {}
-
-.search_failed {}
 
 .checkbox-block {
     display: flex;
@@ -379,7 +410,7 @@ h4 a:hover {
 .checkbox-block__item {
     margin-right: 0.3em;
     width: fit-content;
-    min-width: 20%;
+    min-width: 23%;
 }
 
 .checkboxes div p {
@@ -387,16 +418,16 @@ h4 a:hover {
     font-weight: 700;
 }
 
-.filter-block {    
+.filter-block {
     background-color: #e0e8f349;
     border-top: 1px solid rgba(168, 149, 149, 0.329);
-    -webkit-box-shadow: 0px -1px 29px -15px #787878; 
+    -webkit-box-shadow: 0px -1px 29px -15px #787878;
     box-shadow: 0px -1px 29px -15px #787878;
     padding: 1em 3em;
-    display: flex;    
+    display: flex;
 }
 
-.filters  {
+.filters {
     width: 40%;
 }
 
@@ -404,25 +435,53 @@ h4 a:hover {
     width: 60%;
 }
 
-.filter-container {    
-    width: 70%;
+.filter-container {
+    width: 100%;
     margin-bottom: 0.4em;
 }
 
-.filter-container label {    
+.filter-container label {
     width: 20%;
 }
 
-.filter-container div p, .checkboxes div p {
+.filter-container div p,
+.checkboxes div p {
     color: #121212;
     font-size: 20px;
     font-weight: 700;
-    
     line-height: 1em;
     margin-bottom: 0.2em;
 }
+
 .filter {
-    width: 50%;
+    width: 80%;
 }
 
+@media (max-width: 1100px) {
+    .gemspage-wrapper {
+        width: 93%;
+    }
+}
+
+@media (max-width: 700px) {
+    .filter-block {
+        display: block;
+    }
+
+    .filters {
+        width: 100%;
+    }
+
+    .checkboxes {
+        width: 100%;
+    }
+
+    .filter {
+        width: 100%;
+    }
+
+    .checkbox-block__item {
+        margin-right: 1em;
+    }
+}
 </style>

@@ -211,42 +211,72 @@ h4 a:hover {
 .checkbox-block__item {
     margin-right: 0.3em;
     width: fit-content;
-    min-width: 20%;
+    min-width: 23%;
 }
 
 .checkboxes div p {
-    margin-bottom: 0.3em;
+    margin-bottom: 0.4em;
+    font-weight: 700;
 }
 
-.filter-block {    
-    background-color: #c8daf549;
+.filter-block {
+    background-color: #e0e8f349;
     border-top: 1px solid rgba(168, 149, 149, 0.329);
-    -webkit-box-shadow: 0px -1px 29px -15px #787878; 
+    -webkit-box-shadow: 0px -1px 29px -15px #787878;
     box-shadow: 0px -1px 29px -15px #787878;
     padding: 1em 3em;
-    display: flex;    
+    display: flex;
 }
 
-.filters, .checkboxes {
-    width: 50%;
+.filters {
+    width: 40%;
 }
 
-.filter-container {    
+.checkboxes {
+    width: 60%;
+}
+
+.filter-container {
     width: 100%;
     margin-bottom: 0.4em;
 }
 
-.filter-container label {    
+.filter-container label {
     width: 20%;
 }
 
-.filter-container div p, .checkboxes div p {
+.filter-container div p,
+.checkboxes div p {
     color: #121212;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 700;
     line-height: 1em;
+    margin-bottom: 0.2em;
 }
+
 .filter {
-    width: 50%;
+    width: 80%;
+}
+
+@media (max-width: 700px) {
+
+    .container {
+        width: 97%;
+    }    
+    .filter-block {
+        display: block;
+    }
+
+    .filters {
+        width: 100%;
+    }
+
+    .checkboxes {
+        width: 100%;
+    }
+
+    .filter {
+        width: 100%;
+    }
 }
 </style>

@@ -3,27 +3,25 @@
     <div class="gem__main-container">
         <div v-if="!isLoading" class="gem-item">
             <div class="gem-descr__head">
-                <p><span class="cat">{{ gem.color }} {{ gem.category }}</span>  in {{ gem.cut }} cut {{ Number.parseFloat(gem.weight).toFixed(2) }} ct.</p>
+                <p><span class="cat">{{ gem.color }} {{ gem.category }}</span> in {{ gem.cut }} cut {{
+                    Number.parseFloat(gem.weight).toFixed(2) }} ct.</p>
                 <div class="price-block">
-                    <p>${{ (gem.price * gem.weight).toFixed(0) }} <span class="price-per-ct">/ ${{ gem.price }} per ct.</span></p>                    
+                    <p>${{ (gem.price * gem.weight).toFixed(0) }} <span class="price-per-ct">/ ${{ gem.price }} per
+                            ct.</span></p>
                 </div>
             </div>
             <div class="gem__media-block">
                 <div class="gem-gallery">
-                    <vueper-slides  fixed-height="350px" :parallax="parallax" fade>
+                    <vueper-slides fixed-height="350px" :parallax="parallax" fade>
                         <vueper-slide class="slide" v-for="img in images"
-                            :style="{ backgroundImage: `url(${img.img})`, backgroundPosition: 'center center' }"                
+                            :style="{ backgroundImage: `url(${img.img})`, backgroundPosition: 'center center' }"
                             @click="increaseImgSize(img.img)">
                         </vueper-slide>
                     </vueper-slides>
-                </div> 
+                </div>
                 <div class="gem-video">
-                    <q-video
-                        src="https://gemgarden.herokuapp.com/uploads/video/video_2023-04-06_21-09-29.mp4"
-                        allowfullscreen
-                        :loading="lazy"
-                        :style="{width: '100%', height: '100%'}"
-                    />
+                    <q-video src="https://gemgarden.herokuapp.com/uploads/video/video_2023-04-06_21-09-29.mp4"
+                        allowfullscreen :loading="lazy" :style="{ width: '100%', height: '100%' }" />
                 </div>
             </div>
             <div class="gem__main-description">
@@ -65,12 +63,15 @@
                         </div>
                     </div>
                     <div class=" description__text-item__sub certificate">
-                        <!-- <object><embed :src="'http://localhost:8081/'+gem.certificate" width="700" height="500" /></object> -->
+                        <div class="gem__description__item">
+                            <h4>Certificate</h4>
+                            <img src="https://gemgarden.herokuapp.com/certificates/cert.jpg" alt="">
+                        </div>
                     </div>
                 </div>
-                
-                
-            </div>            
+
+
+            </div>
         </div>
         <div v-if="isBigImage" @click.stop="decreaseImg" class="big__image">
             <div><img :src=bigImage alt=""></div>
@@ -92,7 +93,7 @@ export default {
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg" },
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_1869.jpg" },
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3031.jpg" },
-                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3101.jpg" },                
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3101.jpg" },
             ],
             bigImage: "",
             isBigImage: false,
@@ -110,11 +111,11 @@ export default {
             this.isBigImage = false;
         },
 
-        async fetchGem() {            
+        async fetchGem() {
             this.isLoading = true;
             const { data } = await axios.get(`/collection/${this.$route.params.id}`)
             this.gem = data;
-            this.isLoading = false;            
+            this.isLoading = false;
         }
     },
 
@@ -128,13 +129,16 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-p, h4 {
+p,
+h4 {
     line-height: 1em;
-    margin: 0; padding: 0;
+    margin: 0;
+    padding: 0;
 }
-.gem__main-container {    
+
+.gem__main-container {
     width: 85%;
-    margin: 0 auto;    
+    margin: 0 auto;
 }
 
 .gem-item {
@@ -149,15 +153,17 @@ p, h4 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 1fr;
     grid-column-gap: 50px;
-    grid-row-gap: 0px;     
+    grid-row-gap: 0px;
 }
 
 .vueperslide {
-    border-radius: 7px;    
+    border-radius: 7px;
 }
+
 .gem-gallery {
-    grid-area: 1 / 1 / 2 / 3;      
+    grid-area: 1 / 1 / 2 / 3;
 }
+
 .gem-video {
     grid-area: 1 / 3 / 2 / 4;
 }
@@ -177,7 +183,7 @@ p, h4 {
     margin-top: 1.3em;
     font-size: 28px;
     font-weight: 700;
-    font-family: 'Open Sans', sans-serif; 
+    font-family: 'Open Sans', sans-serif;
 }
 
 .price-per-ct {
@@ -188,10 +194,10 @@ p, h4 {
 
 .gem-descr__head .cat {
     text-transform: capitalize;
-    font-weight: 700;       
+    font-weight: 700;
 }
 
-.gem-descr__head .price {    
+.gem-descr__head .price {
     font-size: 20px;
 }
 
@@ -213,8 +219,9 @@ p, h4 {
     width: 30%;
 }
 
-.description__text-item h4,  .description__text-item p{
-    font-family: 'Open Sans', sans-serif; 
+.description__text-item h4,
+.description__text-item p {
+    font-family: 'Open Sans', sans-serif;
 }
 
 .description__text-item h4 {
@@ -229,8 +236,6 @@ p, h4 {
     text-transform: capitalize;
     font-style: italic;
 }
-
-
 
 .big__image {
     position: fixed;
@@ -250,4 +255,56 @@ p, h4 {
 .big__image img {
     width: 100%;
 }
-</style>
+
+@media (max-width: 860px) {
+    .gem__main-container {
+        width: 95%;        
+    }
+    .gem__media-block {
+        display: block;
+        width: 95%;
+    }
+    .gem-gallery {
+        margin-bottom: 2em;
+    }
+
+    .gem-video {
+        width: fit-content;
+        height: 400px;
+        margin: 0 auto;
+    }
+
+    .gem__main-description {
+        padding: 1em 2em;
+        margin-top: 2em;
+    }
+    .description__text-item h4 {
+        font-size: 16px;
+        color: rgb(49, 47, 47);
+        text-decoration: underline;
+        margin-bottom: 0.6em;
+    }
+
+    .description__text-item p {
+        font-size: 15px;    
+    }
+    
+    .big__image {
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.829);
+        top: 0;
+        left: 0;
+        z-index: 200;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .big__image div {
+        margin: 10em auto;
+        width: 95%;
+    }
+
+    .big__image img {
+        width: 100%;
+    }
+}</style>

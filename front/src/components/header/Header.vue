@@ -9,7 +9,7 @@
                     :placeholder="placeholder" 
                 />
             </div>
-            <div class="logo">
+            <div :class="[isSearchNeeded ? 'logo' : 'logo_single']">
                 <a 
                     @click="$router.push('/')"
                 >Gem Garden</a>
@@ -43,10 +43,10 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Lilita+One&display=swap');
 .header {
-    width: 83%;    
+    width: 80%;    
     background-color: #563838; 
     position: fixed;
-    top: 0; left: 17%;
+    top: 0; left: 20%;
     z-index: 100;
     -webkit-box-shadow: 0px 6px 12px -6px #000000; 
     box-shadow: 0px 6px 12px -6px #000000;       
@@ -61,10 +61,6 @@ export default {
     margin: 0 auto; 
 }
 
-.search_item {
-    width: 25%;
-}
-
 .input_search input {
     padding: 0.4em;
     outline: none;
@@ -73,16 +69,54 @@ export default {
     font-size: 16px;
     line-height: 1em;
 }
-.logo {
-    justify-self: flex-end;
+.logo_single {
+    width: 100%;
+    text-align: right;
 }
 
-.logo a {
+.logo a, .logo_single a {
     font-size: 30px;
     color: rgb(255, 255, 255);
     font-family: 'Forum', cursive;
     font-weight: 700;
     line-height: 1em;
     cursor: pointer;
+}
+
+@media (max-width: 1099px) {
+    .header {
+        width: 100%;
+        left: 0;
+    }
+
+    .header_container {
+        width: 70%;
+    }
+}
+
+@media (max-width: 700px) {    
+
+    .header_container {
+        width: 60%;
+    }
+
+    .input_search input {
+        padding: 0.2em;        
+        border-radius: 4px;
+        font-size: 14px;
+        line-height: 1em;
+    }
+}
+
+@media (max-width: 590px) {       
+
+    .input_search input {
+        display: none;
+    }
+
+    .header_container {
+        width: 85%;
+        justify-content: flex-end;
+    }
 }
 </style>

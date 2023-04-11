@@ -1,6 +1,10 @@
 <template>
   <div class="app">
+    <div v-if="width <= 1100 && !isSidebarVisible" class="burger" style="position: fixed; top: 0; left: 0; z-index: 200;" >
+      <font-awesome-icon class="burger-icon" icon="fa-solid fa-bars" @click="changeSidebarStyle"/>
+    </div>
     <Sidebar v-if="width > 1100" class="sidebar" @newcat="categoryChange" />
+    <SidebarMobile v-if="isSidebarVisible && width <= 1100" class="sidebar-mobile" @newcat="categoryChange" @setVisibility="changeSidebarStyle" />
     <div :class="[width > 1100 && width != 0 ? 'router' : 'router_resize']">
       <router-view :categoryChosen="categoryToShow"></router-view>
     </div>
@@ -9,11 +13,13 @@
 
 <script>
 import Sidebar from "@/components/sidebar/Sidebar.vue";
+import SidebarMobile from "./components/sidebar/SidebarMobile.vue";
 import axios from "./axios";
 
 export default {
   components: {
     Sidebar,
+    SidebarMobile
   },
 
   data() {
@@ -21,7 +27,8 @@ export default {
       gems: [],
       cats: [],
       categoryToShow: 0,
-      width: 0
+      width: 0,
+      isSidebarVisible: false
     }
   },
 
@@ -69,6 +76,10 @@ export default {
       this.cats = newarr;
       console.log(this.cats);
     },
+
+    changeSidebarStyle() {
+      this.isSidebarVisible = !this.isSidebarVisible;
+    }
   },
 
   async mounted() {
@@ -90,15 +101,25 @@ export default {
 }
 
 .sidebar {
-  width: 17%;
+  width: 20%;
   position: fixed;
 }
 
+.sidebar-mobile {
+  width: 60%;
+  z-index: 300;
+}
+
 .router {
-  margin-left: 17%;
-  width: 83%;
+  margin-left: 20%;
+  width: 80%;
   height: 100vh;
   overflow-y: auto;
+}
+
+.router_resize {
+  width: 100%;
+  margin: 0;
 }
 
 ::-webkit-scrollbar {
@@ -115,5 +136,18 @@ export default {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #563838a1;
+}
+
+.burger {
+  width: 100px; height: 8vh;
+  padding: 1em;
+  display: flex;
+  justify-content: center; align-items: center;
+}
+
+.burger-icon {
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
 }
 </style>

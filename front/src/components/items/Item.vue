@@ -111,4 +111,45 @@
         font-size: 19px;
     }
 
+    @media (max-width: 1378px) {
+        .item {
+            width: 30%;
+        }
+    }
+
+    @media (max-width: 750px) {
+        .item {
+            width: 40%;
+        }
+    }
+
+    @media (max-width: 570px) {
+        .item {
+            width: 45%;
+        }
+
+        h4 {
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 0.7em;
+        font-weight: 500; 
+    }
+
+    h5 {
+        font-size: 18px;
+        line-height: 1em;
+        margin: 0.5em 0;
+    }
+    }
+
+    @media (max-width: 495px) {
+        .item {
+            width: 80%;
+        }
+
+        h5 {
+            font-size: 20px;
+        }
+    }
+
 </style>

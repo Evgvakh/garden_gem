@@ -20,7 +20,9 @@ import InputText from "primevue/inputtext";
 import Slider from "primevue/slider";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faBars, faChevronDown, faChevronUp, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCopyright } from '@fortawesome/free-regular-svg-icons';
+import { faYoutube, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import Image from "primevue/image";
 
 const app = createApp(App);
@@ -37,7 +39,16 @@ app.component("Slider", Slider);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("Image", Image);
 
-library.add(faCheck);
+library.add(
+  faCheck,
+  faYoutube,
+  faTelegram,
+  faCopyright,
+  faBars,
+  faChevronDown,
+  faChevronUp,
+  faXmark
+);
 
 app.use(store).use(router).use(PrimeVue).use(Quasar, {
     plugins: {},

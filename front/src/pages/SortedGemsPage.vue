@@ -68,8 +68,7 @@ export default {
         async fetchItems() {
             this.isLoading = true;
             const { data } = await axios.get(`/gems/${this.categoryNumber}`);
-            this.gems = data;
-            console.log(this.gems);
+            this.gems = data;            
             this.isLoading = false;
         },
 

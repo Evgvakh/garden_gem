@@ -39,8 +39,7 @@ export default {
 
     methods: {
         showValues() {
-            this.$emit('update:modelValue', this.range)
-            console.log(this.range)
+            this.$emit('update:modelValue', this.range)            
         }
     }
 }

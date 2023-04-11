@@ -19,7 +19,7 @@
                 </div> 
                 <div class="gem-video">
                     <q-video
-                        src="http://localhost:8081/uploads/video/video_2023-04-06_21-09-29.mp4"
+                        src="https://gemgarden.herokuapp.com/uploads/video/video_2023-04-06_21-09-29.mp4"
                         allowfullscreen
                         :loading="lazy"
                         :style="{width: '100%', height: '100%'}"
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class=" description__text-item__sub certificate">
-                        <object><embed :src="'http://localhost:8081/'+gem.certificate" width="700" height="500" /></object>
+                        <!-- <object><embed :src="'http://localhost:8081/'+gem.certificate" width="700" height="500" /></object> -->
                     </div>
                 </div>
                 
@@ -89,10 +89,10 @@ export default {
         return {
             gem: [],
             images: [
-                { img: "http://localhost:8081/uploads/img/IMG_0727.jpg" },
-                { img: "http://localhost:8081/uploads/img/IMG_1869.jpg" },
-                { img: "http://localhost:8081/uploads/img/IMG_3031.jpg" },
-                { img: "http://localhost:8081/uploads/img/IMG_3101.jpg" },                
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg" },
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_1869.jpg" },
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3031.jpg" },
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3101.jpg" },                
             ],
             bigImage: "",
             isBigImage: false,
@@ -110,13 +110,11 @@ export default {
             this.isBigImage = false;
         },
 
-        async fetchGem() {
-            console.log(this.$route.params.id)
+        async fetchGem() {            
             this.isLoading = true;
             const { data } = await axios.get(`/collection/${this.$route.params.id}`)
             this.gem = data;
-            this.isLoading = false;
-            console.log(typeof this.gem.weight)
+            this.isLoading = false;            
         }
     },
 
@@ -141,7 +139,7 @@ p, h4 {
 
 .gem-item {
     background-color: #eee0e149;
-    padding-top: 20vh;
+    padding-top: 15vh;
 }
 
 .gem__media-block {
@@ -197,9 +195,8 @@ p, h4 {
     font-size: 20px;
 }
 
-
 .gem__main-description {
-    padding: 4em;
+    padding: 4em 5em;
 }
 
 .description__text-item {
@@ -221,14 +218,14 @@ p, h4 {
 }
 
 .description__text-item h4 {
-    font-size: 24px;
+    font-size: 20px;
     color: rgb(49, 47, 47);
     text-decoration: underline;
-    margin-bottom: 0.3em;
+    margin-bottom: 0.5em;
 }
 
 .description__text-item p {
-    font-size: 22px;
+    font-size: 18px;
     text-transform: capitalize;
     font-style: italic;
 }

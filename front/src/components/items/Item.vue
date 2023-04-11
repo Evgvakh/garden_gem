@@ -1,6 +1,6 @@
 <template>
     <div class="item">
-        <div class="item-image" :style="{ backgroundImage: 'url(http://localhost:8081/uploads/img/IMG_0727.jpg)'}">
+        <div class="item-image" :style="{ backgroundImage: 'url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)'}">
         </div>
         <div class="text-block">
             <h4>
@@ -28,7 +28,7 @@
 </script>
 
 <style scoped>
-    @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
     .item {
         -webkit-box-shadow: 0px 7px 15px -6px rgba(0, 0, 0, 0.815); 
@@ -87,6 +87,10 @@
         justify-self: flex-end;
     }
 
+    .price_weight h5 {
+        font-weight: 700;
+    }
+
     .price_weight div:nth-of-type(1) {
         margin-right: 2em;
     }
@@ -102,7 +106,9 @@
     .text-block span.start {
         text-transform: capitalize;
         font-style: normal;
-        color: #121212;
+        font-weight: 500;
+        color: #563838; 
+        font-size: 19px;
     }
 
 </style>

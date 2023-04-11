@@ -11,13 +11,13 @@ import {
 } from "./controllers/itemsController.js";
 
 const app = express();
-const port = 8081;
 
 app.use(express.json());
 app.use(cors());
 app.use("/uploads/img", express.static("uploads/img"));
 app.use("/uploads/video", express.static("uploads/video"));
 app.use("/uploads/certificates", express.static("uploads/certificates"));
+app.use("/uploads/logo", express.static("uploads/logo"));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -43,7 +43,7 @@ app.get("/gems/:id", getAllGemsByCat);
 app.get("/collection/:id", getOneGem);
 app.get("/cats", getCategories);
 
-app.listen(port, (err) => {
+app.listen(8081, (err) => {
   if (err) {
     return console.log("SERVER DOWN");
   } else {

@@ -4,24 +4,23 @@
         <div class="recently_added">
             <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:45%; left: 55%"
                 strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
-            <h3>Recently added</h3>
-            <Carousel v-if="!isLoading" :value="items" :numVisible="5" :numScroll="1" :responsiveOptions="responsiveOptions"
-                circular :autoplayInterval="3000">
-                <template #item="slotProps" class="">
-                    <div class="item m-2 text-center py-5 px-3">
-                        <div class="mb-1">
-                            <img :src="'https://primefaces.org/cdn/primevue/images/product/' + slotProps.data.image"
-                                :alt="slotProps.data.name" class="w-4 shadow-2" />
-                        </div>
-                        <div>
-                            <h4 class=""><a style="cursor: pointer;"
+            <h3 v-if="!isLoading">Recently added</h3>
+            <Carousel v-if="!isLoading" :value="items" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions"
+                circular :autoplayInterval="4000">
+                
+                <template #item="slotProps">
+                    <div class="item text-center">
+                        <div class="item__img" :style="{backgroundImage: `url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)`}">
+                            <div class="item__text">
+                            <h4><a style="cursor: pointer;"
                                     @click="$router.push(`/collection/${slotProps.data.id}`)">{{ slotProps.data.color }} {{
                                         slotProps.data.category }}</a></h4>
                             <div class="price_weight">
-                                <h6 class="mt-0 mb-1">${{ slotProps.data.price }}</h6>
+                                <h6 >${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
                                 <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
                             </div>                            
-                        </div>
+                        </div>                            
+                        </div>                        
                     </div>
                 </template>
             </Carousel>
@@ -105,7 +104,7 @@ export default {
             responsiveOptions: [
                 {
                     breakpoint: '1524px',
-                    numVisible: 4,
+                    numVisible: 3,
                     numScroll: 1
                 },
                 {
@@ -125,24 +124,21 @@ export default {
         async fetchCarouselItems() {
             this.isLoading = true;
             const { data } = await axios.get('/gemscarousel');
-            this.items = data;
-            console.log(this.items)
+            this.items = data;            
             this.isLoading = false;
         },
 
         async fetchItems() {
             this.isLoading = true;
             const { data } = await axios.get(`/gems`);
-            this.gems = data;
-            console.log(this.gems)
+            this.gems = data;            
             this.isLoading = false;
         },
 
         async fetchCats() {
             this.isLoading = true;
             const { data } = await axios.get(`/cats`);
-            this.cats = data;
-            console.log(this.cats)
+            this.cats = data;            
             this.isLoading = false;
         },
 
@@ -244,13 +240,27 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@400;700&display=swap');
 
 h3 {
     line-height: 1em;
-    margin: 0;
+    margin: 4em 0 0.6em 0;
     padding: 0;
+    text-align: center;
+    font-size: 22px;
     font-family: 'PT Serif', serif;
-    color: white;
+    font-family: 'Baloo Tamma 2', cursive;
+    animation: changeColor 1s infinite;
+}
+
+@keyframes changeColor {
+    0% {color: black;}
+    25% { color: #563838;   }
+    50% { color: #77262bbb;}
+    75% {color: #ca564e3b;}
+    100% {
+        color: black;
+    }
 }
 
 h4 a {
@@ -284,20 +294,43 @@ h4 a:hover {
 }
 .recently_added {    
     background-color: rgb(253, 253, 253);
-    margin-top: 10vh;
+    margin-top: 12vh;
 }
 
 .item {
     padding: 0;
     margin: 0 2em;
-    background-color: #77262bbb;
-    height: 160px;
+    background-color: #563838; 
+    height: 220px;
+    min-width: 200px;
+}
+.item__img {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    position: relative;
+    overflow: hidden;
+}
+.item__text {
+    padding: 4em 0.2em;
+    position: absolute;
+    top: 100%;
+    opacity: 0;
+    background: rgb(0,0,0);
+    background: linear-gradient(170deg, rgba(0, 0, 0, 0.541) 35%, rgba(0, 0, 0, 0.842) 68%);
+    width: 100%; height: 100%;
+    transition: all .3s ease-out;    
+}
+.item__img:hover .item__text {
+    top: 0;
+    opacity: 1;
 }
 
 .price_weight {
     display: flex;
     justify-content: space-between;
-    width: 60%;
+    width: 65%;
     margin: 0 auto;
 }
 
@@ -350,7 +383,8 @@ h4 a:hover {
 }
 
 .checkboxes div p {
-    margin-bottom: 0.3em;
+    margin-bottom: 0.4em;
+    font-weight: 700;
 }
 
 .filter-block {    
@@ -382,11 +416,13 @@ h4 a:hover {
 .filter-container div p, .checkboxes div p {
     color: #121212;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 700;
+    
     line-height: 1em;
     margin-bottom: 0.2em;
 }
 .filter {
     width: 50%;
 }
+
 </style>

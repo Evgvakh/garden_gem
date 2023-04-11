@@ -49,7 +49,6 @@ export default {
 
     categoryChange(id) {
       this.categoryToShow = id;
-      console.log(id)
     },
 
     updateWidth() {
@@ -57,17 +56,18 @@ export default {
     },
 
     getCats() {
-      this.gems.map((gem, i) => {        
-        this.cats.push(gem.id_category+gem.category);
-      })
-      let newArr = this.cats.reduce(function (accumulator, currentValue) {
-        if (accumulator.indexOf(currentValue) === -1) {
-          accumulator.push(currentValue);
+      this.gems.map((gem, i) => {
+        let item = { id: gem.id_category, name: gem.category }
+        if (!this.cats.some(cat => cat.id == item.id)) {
+          this.cats.push(item);
         }
-        return accumulator;
-      }, []);
-      this.cats = newArr;
-      console.log(this.cats)
+      });
+
+      let newarr = this.cats.sort((cat1, cat2) => {
+        return cat1.name.localeCompare(cat2.name);
+      })
+      this.cats = newarr;
+      console.log(this.cats);
     },
   },
 
@@ -98,6 +98,22 @@ export default {
   margin-left: 17%;
   width: 83%;
   height: 100vh;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 8px;
+  background-color: #563838;
+  border-radius: 3px;
+  box-shadow: 1px 1px 10px #f3faf7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #563838a1;
 }
 </style>

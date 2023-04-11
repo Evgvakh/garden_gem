@@ -1,9 +1,8 @@
 <template>
   <div>
     <ul>
-      <li class="list-item" v-for="item in cats.type" key={{item}}>
-        <a :id=item.id @click.prevent="clickHandler(Number(item[0]))">{{ item[1].toUpperCase() + item.slice(2,
-          item.length) }}</a>
+      <li class="list-item" v-for="item in cats.type" key={{item.id}} >
+        <a :id=item.id @click.prevent="clickHandler(item.id)">{{ item.name }}</a>
       </li>
     </ul>
   </div>
@@ -32,6 +31,7 @@ ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  
 }
 
 ul li {
@@ -50,6 +50,7 @@ ul li:nth-of-type(even) {
 
 ul li a {
   cursor: pointer;
+  text-transform: capitalize;
 }
 
 ul li:hover {

@@ -13,8 +13,7 @@
                             :style="{ backgroundImage: `url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)` }">
                             <div class="item__text">
                                 <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
-                                    slotProps.data.color }} {{
-        slotProps.data.category }}</a></h4>
+                                    slotProps.data.color }} {{ slotProps.data.category }}</a></h4>
                                 <div class="price_weight">
                                     <h6>${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
                                     <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
@@ -31,6 +30,9 @@
             <button class="cat_button" v-for="cat in cats" @click="$router.push(`/gems/${cat.id}`)"> {{ cat.name }}</button>
         </div>
         <div v-if="!isLoading" class="filter-block">
+            <div class="filters-button">
+                <button @click="popUpFilters">{{ filterButtonText[Number(buttonTextIndex)] }}</button>
+            </div>
             <div class="filters">
                 <div class="filter-container">
                     <div class="label">
@@ -53,12 +55,14 @@
                     <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name"
                         v-model="filterCats" @addCat="addCatToArray" />
                 </div>
-                <div>
-                    <p>Cut</p>
-                </div>
-                <div class="checkbox-block cut-filter">
-                    <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"
-                        v-model="filterCuts" @addCat="addCutToArray" />
+                <div v-if="isAllFilters">
+                    <div>
+                        <p>Cut</p>
+                    </div>                
+                    <div class="checkbox-block cut-filter">
+                        <Checkbox class="checkbox-block__item" v-for="item in this.cut" :key="item.id" :label="item"
+                            v-model="filterCuts" @addCat="addCutToArray" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,6 +112,9 @@ export default {
             minWeight: 0,
             maxPrice: 0,
             maxWeight: 0,
+            isAllFilters: false,
+            filterButtonText: ['more filters', 'less filters'],
+            buttonTextIndex: false,
             responsiveOptions: [
                 {
                     breakpoint: '1524px',
@@ -184,6 +191,12 @@ export default {
             }
         },
 
+        popUpFilters() {
+            this.isAllFilters = !this.isAllFilters;
+            this.buttonTextIndex = !this.buttonTextIndex
+            this.filterCuts = []
+        },
+
         getCut() {
             this.gems.map(gem => {
                 this.cut.push(gem.cut)
@@ -196,16 +209,15 @@ export default {
             }, []);
             this.cut = newArr;
         }
-
     },
 
     async mounted() {
         await this.fetchCarouselItems()
-        await this.fetchItems();
-        await this.fetchCats();
+        await this.fetchItems(); 
+        await this.fetchCats();       
         this.calculateMaxPrice();
-        this.calculateMaxWeight();
-        this.getCut()
+        this.calculateMaxWeight();        
+        this.getCut();
     },
 
     computed: {
@@ -238,8 +250,20 @@ export default {
             } else {
                 return this.filteredGems;
             }
-        }
+        },
 
+        cutsFiltered() {
+            let cutTemp = []
+            this.filteredGems.map(gem => {
+                cutTemp.push(gem.cut)
+            })
+            return cutTemp.reduce(function (accumulator, currentValue) {
+                if (accumulator.indexOf(currentValue) === -1) {
+                    accumulator.push(currentValue);
+                }
+                return accumulator;
+            }, []);            
+        }
     },
 
     watch: {
@@ -331,7 +355,6 @@ h4 a:hover {
     background-color: #563838;
     height: 220px;
     min-width: 200px;
-
 }
 
 .item__img {
@@ -355,6 +378,7 @@ h4 a:hover {
     width: 100%;
     height: 100%;
     transition: all .4s ease-out;
+    border-top: 2px solid white;
 }
 
 .item__img:hover .item__text {
@@ -370,10 +394,10 @@ h4 a:hover {
 }
 
 .cats {
-    padding: 2em 5em;
+    padding: 1.3em;
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     background-color: #eee0e149;
 }
 
@@ -387,10 +411,10 @@ h4 a:hover {
     font-weight: 500;
     font-size: 14px;
     width: fit-content;
-    min-width: 13%;
+    min-width: 10%;
     margin-right: 0.7em;
     margin-bottom: 0.6em;
-    padding: 0.3em;
+    padding: 0.2em 0.5em;
     cursor: pointer;
     transition: color .3s ease-out;
     transition: background .3s ease-out;
@@ -425,6 +449,7 @@ h4 a:hover {
     box-shadow: 0px -1px 29px -15px #787878;
     padding: 1em 3em;
     display: flex;
+    position: relative;    
 }
 
 .filters {
@@ -433,6 +458,7 @@ h4 a:hover {
 
 .checkboxes {
     width: 60%;
+    margin-bottom: 1em;
 }
 
 .filter-container {
@@ -455,6 +481,20 @@ h4 a:hover {
 
 .filter {
     width: 80%;
+}
+
+.filters-button {
+    position: absolute;
+    bottom: 2%; right: 1%;
+}
+
+.filters-button button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #563838b4;
+    text-transform: capitalize;
 }
 
 @media (max-width: 1100px) {

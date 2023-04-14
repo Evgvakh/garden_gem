@@ -169,10 +169,10 @@ span.line.line-min {
 
 @media (max-width: 800px) {
     .content-container__img h2 {    
-    font-size: 38px;      
+    font-size: 32px;      
 }
 .p-text {    
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .content-container__img {    

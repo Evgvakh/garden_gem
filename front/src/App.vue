@@ -1,12 +1,12 @@
 <template>
   <div class="app">
-    <div v-if="width <= 1100 && !isSidebarVisible" class="burger" style="position: fixed; top: 0; left: 0; z-index: 200;" >
+    <div v-if="width <= 1100 && !isSidebarVisible && this.$route.path != '/admin'" class="burger" style="position: fixed; top: 0; left: 0; z-index: 200;" >
       <font-awesome-icon class="burger-icon" icon="fa-solid fa-bars" @click="changeSidebarStyle"/>
     </div>
-    <Sidebar v-if="width > 1100" class="sidebar" @newcat="categoryChange" />
-    <SidebarMobile v-if="isSidebarVisible && width <= 1100" class="sidebar-mobile" @newcat="categoryChange" @setVisibility="changeSidebarStyle" />
-    <div :class="[width > 1100 && width != 0 ? 'router' : 'router_resize']">
-      <router-view :categoryChosen="categoryToShow"></router-view>
+    <Sidebar v-if="width > 1100 && this.$route.path != '/admin'" class="sidebar" :gems="this.gems" @newcat="categoryChange" />
+    <SidebarMobile v-if="isSidebarVisible && width <= 1100" class="sidebar-mobile" :gems="this.gems" @newcat="categoryChange" @setVisibility="changeSidebarStyle" />
+    <div :class="[width > 1100 && width != 0 && this.$route.path != '/admin' ? 'router' : 'router_resize']">
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -73,8 +73,7 @@ export default {
       let newarr = this.cats.sort((cat1, cat2) => {
         return cat1.name.localeCompare(cat2.name);
       })
-      this.cats = newarr;
-      console.log(this.cats);
+      this.cats = newarr;      
     },
 
     changeSidebarStyle() {
@@ -139,15 +138,16 @@ export default {
 }
 
 .burger {
-  width: 100px; height: 8vh;
-  padding: 1em;
+  width: 12%; height: 8vh;
+  padding: 2% 8%;
   display: flex;
   justify-content: center; align-items: center;
 }
 
 .burger-icon {
   color: white;
-  font-size: 36px;
+  font-size: 32px;
+  line-height: 1em;
   cursor: pointer;
 }
 </style>

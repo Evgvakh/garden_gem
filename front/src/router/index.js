@@ -3,6 +3,7 @@ import HomePage from '@/pages/HomePage';
 import GemsPage from "@/pages/GemsPage";
 import SortedGemsPage from '@/pages/SortedGemsPage';
 import Gem from '@/pages/Gem.vue';
+import Admin from '@/pages/Admin.vue';
 
 const routes = [
   {
@@ -24,6 +25,12 @@ const routes = [
     path: "/collection/:id",
     name: "gem",
     component: Gem,
+  },
+
+  {
+    path: "/admin",
+    name: "admin",
+    component: Admin,
   },
 ];
 

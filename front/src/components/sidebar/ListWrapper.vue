@@ -1,5 +1,4 @@
-<template>
-  
+<template>  
     <div>
         <span>{{ title }}</span>
         <font-awesome-icon icon="fa-solid fa-chevron-down" v-if="isChevron && isChevronUp" class="sidebar-chevron" @click.stop="changeChevron(true)"/>
@@ -15,7 +14,7 @@ export default {
     title: '',
     isChevron: {
       type: Boolean
-    },      
+    },        
   },
 
   data() {
@@ -44,7 +43,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2em;
+    padding: 0 1em 0 3em;
   }
 
   span {    

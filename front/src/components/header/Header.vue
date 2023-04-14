@@ -43,13 +43,16 @@ export default {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Lilita+One&display=swap');
 .header {
-    width: 80%;    
+    width: 80%; 
+    height: 8vh;
     background-color: #563838; 
     position: fixed;
     top: 0; left: 20%;
     z-index: 100;
     -webkit-box-shadow: 0px 6px 12px -6px #000000; 
-    box-shadow: 0px 6px 12px -6px #000000;       
+    box-shadow: 0px 6px 12px -6px #000000;
+    display: flex;
+    align-items: center;       
 }
 
 .header_container {
@@ -57,7 +60,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5em 0;   
+    /* padding: 1.5em 0;    */
     margin: 0 auto; 
 }
 
@@ -115,8 +118,12 @@ export default {
     }
 
     .header_container {
-        width: 85%;
+        width: 85%;        
         justify-content: flex-end;
+    }
+
+    .logo a, .logo_single a {
+        font-size: 24px;        
     }
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-    <div class="sidebar" :class=backImageClass>        
+    <div class="sidebar">        
         <ListWrapper class="item" :title='"Gems"' @modify="setVisibleSection" @click.stop="$router.push('/gems')"
             @click="setVisibleSection('gems')" :isChevron="false"/>
-        <SideList v-if="visibleSection == 'gems'" @changeBackground="editBackground" />
+        <SideList v-if="visibleSection == 'gems'" :gems="this.gems"/>
         <ListWrapper class="item" :title='"Contacts"' @modify="setVisibleSection" @click.stop="$router.push('/contacts')"
             @click="setVisibleSection('contacts')" :isChevron="false"/>
         <ListWrapper class="item" :title='"About us"' @modify="setVisibleSection" @click.stop="$router.push('/about')"
@@ -27,10 +27,15 @@ export default {
         SideList
     },
 
+    props: {
+        gems: {
+            type: Array
+        }
+    },
+
     data() {
         return {
-            visibleSection: '',
-            backImageClass: ''
+            visibleSection: ''            
         }
     },
 
@@ -39,10 +44,6 @@ export default {
             this.visibleSection = item;
         }
     },
-
-    watch: {
-        
-    }
 }
 </script>
 
@@ -63,7 +64,7 @@ export default {
 .sidebar-logo {    
     color: white;
     text-align: center;
-    margin-top: 12em;
+    margin-top: 8em;
     padding: 0 1em;
 }
 

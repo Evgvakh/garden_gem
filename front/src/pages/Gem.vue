@@ -2,34 +2,35 @@
     <Header :isSearchNeeded="false" />
     <div class="gem__main-container">
         <div v-if="!isLoading" class="gem-item">
-            <div class="gem-descr__head">
-                <p><span class="cat">{{ gem.color }} {{ gem.category }}</span> in {{ gem.cut }} cut {{
-                    Number.parseFloat(gem.weight).toFixed(2) }} ct.</p>
-                <div class="price-block">
-                    <p>${{ (gem.price * gem.weight).toFixed(0) }} <span class="price-per-ct">/ ${{ gem.price }} per
-                            ct.</span></p>
-                </div>
-            </div>
             <div class="gem__media-block">
                 <div class="gem-gallery">
-                    <vueper-slides fixed-height="350px" :parallax="parallax" fade>
+                    <vueper-slides fixed-height="400px" :parallax="parallax" :bullets="false" fade>
                         <vueper-slide class="slide" v-for="img in images"
                             :style="{ backgroundImage: `url(${img.img})`, backgroundPosition: 'center center' }"
-                            @click="increaseImgSize(img.img)">
-                        </vueper-slide>
+                            @click="increaseImgSize(img.img)" :video="img.video" />
+                        <vueper-slide class="slide" v-for="vid in video" :video="vid.video"></vueper-slide>
                     </vueper-slides>
                 </div>
-                <div class="gem-video">
-                    <q-video src="https://gemgarden.herokuapp.com/uploads/video/video_2023-04-06_21-09-29.mp4"
-                        allowfullscreen :loading="lazy" :style="{ width: '100%', height: '100%' }" />
+                <div class="gem-descr__head">
+                    <p><span class="cat">{{ gem.color }} {{ gem.category }}</span> in {{ gem.cut }} cut {{
+                        Number.parseFloat(gem.weight).toFixed(2) }} ct., {{ gem.item_set }} set</p>
+                    <div class="price-block">
+                        <p>${{ (gem.price * gem.weight).toFixed(0) }} <span class="price-per-ct">/ ${{ gem.price }} <span
+                                    class="per-ct">per ct.</span></span></p>
+                    </div>
                 </div>
             </div>
             <div class="gem__main-description">
+                <div class="gem__description__item">
+                    <h4>Description</h4> 
+                    <p style="text-transform: none !important; line-height: 1.3em;"> <vue-markdown :source="markDown" /></p>
+                </div>
+                <br>
                 <div class="description__text-item">
                     <div class="description__text-item__sub">
                         <div v-if="gem.id_subcategory != 1" class="gem__description__item">
-                            <h4>Additional name</h4>
-                            <p>{{ gem.subcategory }}</p>
+                            <h4 >Additional name</h4>
+                            <p>{{gem.subcategory}}</p>
                         </div>
                         <div class="gem__description__item">
                             <h4>Origin</h4>
@@ -65,12 +66,11 @@
                     <div class=" description__text-item__sub certificate">
                         <div class="gem__description__item">
                             <h4>Certificate</h4>
-                            <img src="https://gemgarden.herokuapp.com/certificates/cert.jpg" alt="">
+                            <img src="https://gemgarden.herokuapp.com/uploads/certificates/cert.jpg" alt="" style="cursor: pointer;" @click.stop="increaseImgSize('https://gemgarden.herokuapp.com/uploads/certificates/cert.jpg')">
                         </div>
                     </div>
+
                 </div>
-
-
             </div>
         </div>
         <div v-if="isBigImage" @click.stop="decreaseImg" class="big__image">
@@ -84,8 +84,9 @@ import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
 import Header from "@/components/header/Header.vue";
 import axios from "@/axios";
+import VueMarkdown from 'vue-markdown-render'
 export default {
-    components: { VueperSlides, VueperSlide, Header },
+    components: { VueperSlides, VueperSlide, Header, VueMarkdown },
     data() {
         return {
             gem: [],
@@ -93,9 +94,18 @@ export default {
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg" },
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_1869.jpg" },
                 { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3031.jpg" },
-                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3101.jpg" },
+                { img: "https://gemgarden.herokuapp.com/uploads/img/IMG_3101.jpg" }
+            ],
+            video: [
+                {
+                    video: {
+                        url: "https://www.veed.io/embed/bb2f8626-1901-4733-8d59-7ed8bf7f8b85",
+                        props: { allowfullscreen: true, muted: true }
+                    }
+                }
             ],
             bigImage: "",
+            markDown: "# dsadsa",
             isBigImage: false,
             isLoading: false,
         };
@@ -115,12 +125,19 @@ export default {
             this.isLoading = true;
             const { data } = await axios.get(`/collection/${this.$route.params.id}`)
             this.gem = data;
+            this.markDown = data.description;
             this.isLoading = false;
         }
     },
 
     async mounted() {
         await this.fetchGem()
+    },
+
+    computed: {
+        markedDescr() {
+            return marked.parse(this.gem.description, {sanitize: true})
+        }
     }
 };
 </script>
@@ -150,9 +167,9 @@ h4 {
     display: grid;
     width: 90%;
     margin: 0 auto;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-template-rows: 1fr;
-    grid-column-gap: 50px;
+    grid-column-gap: 30px;
     grid-row-gap: 0px;
 }
 
@@ -160,36 +177,42 @@ h4 {
     border-radius: 7px;
 }
 
+
 .gem-gallery {
-    grid-area: 1 / 1 / 2 / 3;
+    grid-area: 1 / 1 / 2 / 4;
+    -webkit-box-shadow: 0px 0px 20px -8px #000000;
+    box-shadow: 0px 0px 20px -8px #000000;
 }
 
-.gem-video {
-    grid-area: 1 / 3 / 2 / 4;
-}
-
-.q-video {
-    border-radius: 7px;
+.gem-descr__head {
+    grid-area: 1 / 4 / 2 / 6;
 }
 
 .gem-descr__head {
     font-family: 'PT Serif', serif;
-    font-size: 30px;
-    margin-bottom: 1.3em;
-    padding: 0 2em;
+    font-size: 34px;
+}
+
+.gem-descr__head p {
+    line-height: 1.3em;
 }
 
 .price-block {
-    margin-top: 1.3em;
-    font-size: 28px;
+    margin-top: 2em;
+    font-size: 32px;
     font-weight: 700;
     font-family: 'Open Sans', sans-serif;
 }
 
 .price-per-ct {
     color: grey;
+    font-size: 28px;
     font-weight: 400;
     font-style: italic;
+}
+
+.price-per-ct .per-ct {
+    font-size: 14px;
 }
 
 .gem-descr__head .cat {
@@ -202,7 +225,8 @@ h4 {
 }
 
 .gem__main-description {
-    padding: 4em 5em;
+    padding: 4em 3em;
+    max-width: 900px;
 }
 
 .description__text-item {
@@ -219,26 +243,30 @@ h4 {
     width: 30%;
 }
 
-.description__text-item h4,
-.description__text-item p {
+.gem__description__item h4,
+.gem__description__item p {
     font-family: 'Open Sans', sans-serif;
 }
 
-.description__text-item h4 {
-    font-size: 20px;
+.gem__description__item h4 {
+    font-size: 14px;
     color: rgb(49, 47, 47);
-    text-decoration: underline;
     margin-bottom: 0.5em;
 }
 
-.description__text-item p {
-    font-size: 18px;
+.gem__description__item p {
+    font-size: 20px;
     text-transform: capitalize;
-    font-style: italic;
+}
+
+.gem__description__item img {
+    width: 100%;
 }
 
 .big__image {
     position: fixed;
+    display: flex;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.829);
     top: 0;
     left: 0;
@@ -249,7 +277,7 @@ h4 {
 
 .big__image div {
     margin: 4em auto;
-    width: 600px;
+    width: 70%;
 }
 
 .big__image img {
@@ -258,12 +286,23 @@ h4 {
 
 @media (max-width: 860px) {
     .gem__main-container {
-        width: 95%;        
+        width: 95%;
     }
+
+    .gem-item {
+        background-color: #eee0e149;
+        padding-top: 11vh;
+    }
+
     .gem__media-block {
         display: block;
         width: 95%;
     }
+
+    .price-block {
+        margin-top: 1em;
+    }
+
     .gem-gallery {
         margin-bottom: 2em;
     }
@@ -275,20 +314,21 @@ h4 {
     }
 
     .gem__main-description {
-        padding: 1em 2em;
+        padding: 3% 3%;
         margin-top: 2em;
     }
+
     .description__text-item h4 {
-        font-size: 16px;
+        font-size: 14px;
         color: rgb(49, 47, 47);
-        text-decoration: underline;
         margin-bottom: 0.6em;
+        text-decoration: underline;
     }
 
     .description__text-item p {
-        font-size: 15px;    
+        font-size: 18px;
     }
-    
+
     .big__image {
         position: fixed;
         background-color: rgba(0, 0, 0, 0.829);

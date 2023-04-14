@@ -2,7 +2,7 @@
     <div class="sidebar" :class=backImageClass>        
         <ListWrapper class="item" :title='"Gems"' @modify="setVisibleSection" @click.stop="$router.push('/gems')"
             @click="setVisibleSection('gems')" :isChevron="true" @listPopup="popUpList"/>
-        <SideList v-if="isListPopedUp" @hideMobileSidebar="$emit('setVisibility', false)"/>
+        <SideList v-if="isListPopedUp" @hideMobileSidebar="$emit('setVisibility', false)" :gems="this.gems"/>
         <ListWrapper class="item" :title='"Contacts"' @modify="setVisibleSection" @click.stop="$router.push('/contacts')"
             @click="setVisibleSection('contacts')" :isChevron="false"/>
         <ListWrapper class="item" :title='"About us"' @modify="setVisibleSection" @click.stop="$router.push('/about')"
@@ -28,6 +28,12 @@ export default {
     components: {
         ListWrapper,
         SideList
+    },
+
+    props: {
+        gems: {
+            type: Array
+        }
     },
 
     data() {
@@ -57,7 +63,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Lilita+One&display=swap');
 .sidebar {
     height: 100vh;
-    overflow-y: hidden;
+    overflow-y: auto;
     background-color: #282726;
     padding: 5em 0;    
 }

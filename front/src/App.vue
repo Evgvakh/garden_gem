@@ -40,13 +40,7 @@ export default {
 
   methods: {
     async uploadFile() {
-      const formData = new FormData();
-      formData.append("img", this.file);
-      console.log(this.file);
-      const headers = {
-        "Content-Type": "multipart/form-data",
-      };
-      const { data } = await axios.post("/upload", formData);
+      
     },
 
     async fetchItems() {

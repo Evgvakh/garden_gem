@@ -119,6 +119,7 @@ ul .list-item a:hover {
 
 .sidelist-chevron {
   font-size: 14px;
+  padding: 0.5em;
 }
  
 .sublist-wrapper {

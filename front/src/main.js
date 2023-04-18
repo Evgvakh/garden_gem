@@ -18,6 +18,10 @@ import DataViewLayoutOptions from "primevue/dataviewlayoutoptions";
 import Divider from "primevue/divider";
 import InputText from "primevue/inputtext";
 import Slider from "primevue/slider";
+import ConfirmDialog from "primevue/confirmdialog";
+import ConfirmationService from "primevue/confirmationservice";
+import Toast from "primevue/toast";
+import ToastService from "primevue/toastservice";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCheck, faBars, faChevronDown, faChevronUp, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -38,6 +42,9 @@ app.component("InputText", InputText);
 app.component("Slider", Slider);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.component("Image", Image);
+app.component("ConfirmDialog", ConfirmDialog);
+app.component("ConfirmationService", ConfirmationService);
+app.component("Toast", Toast);
 
 library.add(
   faCheck,
@@ -50,6 +57,13 @@ library.add(
   faXmark
 );
 
-app.use(store).use(router).use(PrimeVue).use(Quasar, {
+app
+  .use(store)
+  .use(router)
+  .use(ConfirmationService)
+  .use(PrimeVue)
+  .use(ToastService)
+  .use(Quasar, {
     plugins: {},
-}).mount('#app');
+  })
+  .mount("#app");

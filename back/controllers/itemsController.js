@@ -34,7 +34,7 @@ async function getItemsWithImages(preparedReq, conn, id = null, lim = null, offs
   items.map((item) => {
     let imgs = images.filter((img) => img.id_item === item.id);
     let newImgsArr = imgs.map((el) => {
-      return el.img;
+      return {id: el.id, img: el.img};
     });
     item.images = newImgsArr;
   });
@@ -72,9 +72,18 @@ export const getAllItems = async (req, res) => {
 
     const items = await getItemsWithImages(request, connection);
     res.json(items);
+
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     res.json(err);
   }
+  
 };
 
 export const getCarouselItems = async (req, res) => {
@@ -110,6 +119,14 @@ export const getCarouselItems = async (req, res) => {
 
     const items = await getItemsWithImages(request, connection);
     res.json(items);
+
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     res.json(err);
   }
@@ -149,6 +166,14 @@ export const getAllGemsByCat = async (req, res) => {
     const items = await getItemsWithImages(request, connection, id_cat);
 
     res.json(items);
+
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     res.json(err);
   }
@@ -192,6 +217,14 @@ export const getOneGem = async (req, res) => {
     const id = req.params.id;
     const items = await getItemsWithImages(request, connection, id);
     res.json(items[0]);
+
+    connection.end((err, conn) => {
+      if (err) {
+        console.error("Unable to close connection");
+      } else {
+        console.log("Connection closed");
+      }
+    });
   } catch (err) {
     res.json(err);
   }

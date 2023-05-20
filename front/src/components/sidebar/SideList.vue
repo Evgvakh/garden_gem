@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul>
-      <li class="list-item" v-for="item in cats.type" key={{item.id}} >
+      <li class="list-item" v-for="item in categories" key={{item.id}} >
         <a :id=item.id @click.prevent="clickHandler(item.id)">
           {{ item.name }}
           <font-awesome-icon icon="fa-solid fa-chevron-down" 
@@ -19,7 +19,7 @@
           :idCat="item.id" 
           :gems="this.gems" 
           :id="`sublist_${item.id}`"
-          @subCatsSize="setSubcatsToShow"          
+          @subCatsSize="setSubcatsToShow"                   
         />
       </li>
     </ul>
@@ -28,11 +28,13 @@
 
 <script>
 import SubSideList from './SubSideList.vue';
-export default {
-  inject: ["cats"],
+export default { 
 
   props: {
     gems: {
+      type: Array
+    },
+    categories: {
       type: Array
     }
   },
@@ -75,7 +77,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 div {
-  background-color: #563838d0;
+  background-color: transparent;
 }
 
 ul {
@@ -91,25 +93,24 @@ ul .list-item {
   letter-spacing: 1.1px;
   font-weight: 500;
   line-height: 2em;
-  padding: 0.2em 0;
+  /*  */
 }
 
 ul .list-item:nth-of-type(even) {
   background-color: rgba(0, 0, 0, 0.095);
 }
 
-ul .list-item a {
-  padding-left: 3em;
-  padding-right: 1em;
+ul .list-item a {  
+  padding: 0.2em 1em 0.2em 3em;
   cursor: pointer;
   text-transform: capitalize;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 100%;  
 }
 
-ul .list-item:hover {
+ul .list-item a:hover {
   background-color: rgba(255, 255, 255, 0.185);
 }
 

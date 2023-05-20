@@ -13,7 +13,7 @@
 <style scoped>
     @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito+Sans:wght@700&display=swap');
     .failed-search {
-        padding: 3em 4em 6em 4em;
+        padding: 3em 4em 15em 4em;
     }
 
     .failed-search h2 {

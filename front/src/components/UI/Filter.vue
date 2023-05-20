@@ -5,13 +5,13 @@
         :max="max + 1" 
         :step="step" 
         label 
-        color="black" 
-        label-color="brown-5"
+        color="brown-3" 
+        label-color="teal-4"
         track-color="grey-3" 
-        label-text-color="white" 
-        track-size="1px" 
+        label-text-color="lime-1"         
+        track-size="2px" 
         thumb-size="18px" 
-        thumb-color="brown-5"
+        thumb-color="teal-3"
         @change="showValues" 
     />
 </template>

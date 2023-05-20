@@ -47,10 +47,10 @@ export default {
 }
 
 .checkbox {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border: 2px solid rgb(60, 60, 65);
-    border-radius: 13px;
+    border-radius: 50%;
     position: relative;
     padding: 0;
 }
@@ -65,10 +65,10 @@ export default {
 }
 
 .checkbox .icon {
-    font-size: 15px;
+    font-size: 22px;
     position: absolute;
-    top: 11%;
-    left: 10%;
+    top: -62%;
+    right: -46%;
     color: #563838;  
     transition: all .2s ease-in;
 }
@@ -79,4 +79,11 @@ input:not(:checked)~.icon {
 
 input:checked~.icon {
     opacity: 1;
-}</style>
+}
+
+@media (max-width: 450px) {
+    .checkbox-container label {
+        font-size: 14px;
+    }
+}
+</style>

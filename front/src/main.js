@@ -20,14 +20,16 @@ import InputText from "primevue/inputtext";
 import Slider from "primevue/slider";
 import ConfirmDialog from "primevue/confirmdialog";
 import ConfirmationService from "primevue/confirmationservice";
+import ConfirmPopup from "primevue/confirmpopup";
 import Toast from "primevue/toast";
 import ToastService from "primevue/toastservice";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCheck, faBars, faChevronDown, faChevronUp, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { faCopyright } from '@fortawesome/free-regular-svg-icons';
+import { faCheck, faBars, faChevronDown, faChevronUp, faXmark, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faCopyright, faGem } from '@fortawesome/free-regular-svg-icons';
 import { faYoutube, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import Image from "primevue/image";
+import "primeicons/primeicons.css";
 
 const app = createApp(App);
 
@@ -45,6 +47,7 @@ app.component("Image", Image);
 app.component("ConfirmDialog", ConfirmDialog);
 app.component("ConfirmationService", ConfirmationService);
 app.component("Toast", Toast);
+app.component("ConfirmPopup", ConfirmPopup);
 
 library.add(
   faCheck,
@@ -54,7 +57,9 @@ library.add(
   faBars,
   faChevronDown,
   faChevronUp,
-  faXmark
+  faXmark,
+  faCaretRight,
+  faGem
 );
 
 app

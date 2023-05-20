@@ -1,11 +1,15 @@
 <template>
-    <Header v-model="searchQuery" placeholder="Search your gem here" :isSearchNeeded="false"/>
-    <div class="container">
-        <div class="filter-block">
+    <Header v-model="searchQuery" placeholder="Search your gem here" :isSearchNeeded="false" :isCategory="true" :category="categoryName" :subCategory="subCategoryName" />    
+    <div v-if="!isLoading" class="category-description__main" :style="{backgroundImage: `url(http://localhost:8081/uploads/assets/360_F_196924770_obZVTtzRj4lofwUBRuXfa50rj9zbosZT.jpg)`}">
+        <p :style="{textShadow: '10px 12px 3px rgba(18,18,18,0.11)'}">{{ description }}</p>
+        <button @click="$router.push('/glossarium')">Learn more about <strong>{{ subCategoryName || categoryName }}</strong> in our Glossarium</button>
+    </div>
+    <div class="container">        
+        <div v-if="!isLoading" class="filter-block">
             <div class="filters">
                 <div class="filter-container">
                     <div class="label"><p>Price</p></div>
-                    <Filter class="filter filter-price" v-model="priceQuery" :max="maxPrice" step="5" />
+                    <Filter class="filter filter-price" v-model="priceQuery" :max="maxPrice" step=5 />
                 </div>
                 <div class="filter-container">
                     <div class="label"><p>Weight</p></div>
@@ -18,9 +22,17 @@
                     <Checkbox class="checkbox-block__item" v-for="item in cut" :key="item.id" :label="item"  v-model="filterCuts"
                         @addCat="addCutToArray"/>
                 </div>
+                <div>
+                    <p>Color</p>
+                </div>
+                <div class="checkbox-block cut-filter">
+                    <Checkbox class="checkbox-block__item" v-for="item in this.colors" :key="item.id" :label="item"
+                        v-model="filterColors" @addCat="addColorToArray" />
+                </div>
             </div>
         </div>    
-        <ItemsCards v-if="this.filteredCutGems.length > 0 && !isLoading" :gems="this.filteredCutGems" />
+        <ItemsCards v-if="this.filteredColorGems.length > 0 && !isLoading" :gems="this.filteredColorGems" />
+        <FailedSearch v-else-if="this.filteredColorGems.length == 0 && !isLoading" />
     </div>
 </template>
 
@@ -30,19 +42,24 @@ import Header from "@/components/header/Header.vue";
 import ItemsCards from "@/components/items/ItemsCards.vue";
 import Filter from "@/components/UI/Filter.vue";
 import Checkbox from "@/components/UI/Checkbox.vue";
+import FailedSearch from "@/components/FailedSearch.vue";
 
 export default {
     components: {
         Header,
         ItemsCards,
         Filter,
-        Checkbox
+        Checkbox,
+        FailedSearch
     },
     data() {
         return {            
             gems: [],            
             cut: [],
             filterCuts: [],
+            colors: [],
+            filterColors: [],
+            description: '',            
             maxPrice: 0,
             maxWeight: 0,
             priceQuery: {
@@ -57,6 +74,7 @@ export default {
             limit: 20,
             offset: 0,
             categoryNumber: 0,
+            subCategoryNumber: 0,
             searchQuery: "",
             priceQuery: {
                 min: 0,
@@ -67,13 +85,44 @@ export default {
     methods: {
         async fetchItems() {
             this.isLoading = true;
-            const { data } = await axios.get(`/gems/${this.categoryNumber}`);
+            let data
+            if (this.subCategoryNumber == 0) {
+                let res = await axios.get(`/gems/${this.categoryNumber}`);
+                data = res.data
+            } else {
+                let res = await axios.get(`/gems/${this.categoryNumber}`);
+                data = res.data.filter(gem => {
+                    return gem.id_subcategory == this.subCategoryNumber
+                })
+            }
             this.gems = data;            
             this.isLoading = false;
+        },        
+
+        async fetchDescription() {
+            this.isLoading = true;
+            let data
+            if(this.subCategoryNumber !== 0) {
+               let res = await axios.get(`/descr/subcategories/${this.subCategoryNumber}`)
+               data = res.data
+            } else {
+               let res = await axios.get(`/descr/categories/${this.categoryNumber}`)
+               data = res.data
+            }
+            this.description = data;            
+            this.isLoading = false;            
         },
 
         setCategoryNumber() {
-            this.categoryNumber = this.$route.params.id
+            this.categoryNumber = Number(this.$route.params.id)
+        },
+
+        setSubCategoryNumber() {
+            if (this.$route.params.subcatId) {
+                this.subCategoryNumber = this.$route.params.subcatId
+            } else {
+                this.subCategoryNumber = 0
+            }
         },
 
         calculateMaxPrice() {
@@ -98,6 +147,28 @@ export default {
             }
         },
 
+        addColorToArray(color) {
+             if (!this.filterColors.includes(color)) {
+                this.filterColors.push(color);
+            } else {
+                this.filterColors.splice(this.filterColors.indexOf(color), 1)
+            }
+        },
+
+        getColor() {
+            let arr = []
+            this.gems.map(gem => {
+                arr.push(gem.color)
+            })
+            let newArr = arr.reduce(function (accumulator, currentValue) {
+                if (accumulator.indexOf(currentValue) === -1) {
+                    accumulator.push(currentValue);
+                }
+                return accumulator;
+            }, []);
+            this.colors = newArr;
+        },        
+
         getCut() {
             this.gems.map(gem => {
                 this.cut.push(gem.cut)
@@ -118,10 +189,13 @@ export default {
 
     async mounted() {
         this.setCategoryNumber();
+        this.setSubCategoryNumber();
         await this.fetchItems();
+        await this.fetchDescription();        
         this.calculateMaxPrice();
         this.calculateMaxWeight();
-        this.getCut()
+        this.getCut();
+        this.getColor();
     },
 
     computed: {
@@ -145,13 +219,51 @@ export default {
             } else {
                 return this.searchedAndFilteredGems;
             }
-        }        
+        },
+
+        filteredColorGems() {
+            if (this.filterColors.length > 0) {
+                return this.filteredCutGems.filter(item => {
+                    return this.filterColors.some(color => item.color.includes(color))
+                })
+            } else {
+                return this.filteredCutGems;
+            }
+        },
+
+        categoryName() {
+            if(this.gems.length > 0) return this.gems[0].category
+        },
+
+        subCategoryName() {
+            if (this.gems.length > 0 && this.subCategoryNumber !== 0) {
+                return this.gems[0].subcategory
+            } else {
+                return ''
+            }
+        },
+
+        storeVar() {
+            return process.env.VUE_APP_PROD_STORE
+        }
     },
 
     watch: {
         async "$route.params.id"() {
-            this.categoryNumber = this.$route.params.id;
+            this.setCategoryNumber();
+            this.setSubCategoryNumber();
             await this.fetchItems();
+            await this.fetchDescription();  
+            this.calculateMaxPrice();
+            this.calculateMaxWeight();
+            this.clearCutFilter();
+            this.getCut()
+        },
+        async "$route.params.subcatId"() {
+            this.setCategoryNumber();
+            this.setSubCategoryNumber();
+            await this.fetchItems();
+            await this.fetchDescription();  
             this.calculateMaxPrice();
             this.calculateMaxWeight();
             this.clearCutFilter();
@@ -162,9 +274,12 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Oldenburg&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 .container {
     margin: 0 auto;
-    margin-top: 8vh;
+    
     width: 90%;
 }
 
@@ -202,6 +317,38 @@ h4 a:hover {
     margin: 0 auto;
 }
 
+.category-description__main {
+    padding: 3em;    
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;    
+    margin-top: 8vh;
+}
+
+.category-description__main p {
+    color: rgb(43, 36, 36);
+    font-size: 20px;
+    text-align: left;
+    width: 50%;
+    font-family: 'Oldenburg', cursive;
+}
+
+.category-description__main button {
+    border: 2px solid #00000096;
+    padding: 0.5em 1em;
+    background: transparent;
+    margin-top: 3em;
+    font-size: 18px;
+    font-family: 'Open Sans', sans-serif;
+    font-family: 'Oldenburg', cursive;
+    cursor: pointer;
+    transition: .3s all ease;
+}
+
+.category-description__main button:hover {
+    border: 2px solid transparent;    
+}
+
 .checkbox-block {
     display: flex;
     flex-wrap: wrap;
@@ -209,9 +356,10 @@ h4 a:hover {
 }
 
 .checkbox-block__item {
-    margin-right: 0.3em;
+    margin-right: 0.2em;
+    margin-bottom: 0.5em;
     width: fit-content;
-    min-width: 23%;
+    min-width: 24%;
 }
 
 .checkboxes div p {
@@ -222,10 +370,11 @@ h4 a:hover {
 .filter-block {
     background-color: #e0e8f349;
     border-top: 1px solid rgba(168, 149, 149, 0.329);
-    -webkit-box-shadow: 0px -1px 29px -15px #787878;
-    box-shadow: 0px -1px 29px -15px #787878;
-    padding: 1em 3em;
+    -webkit-box-shadow: 0px -1px 21px -11px #787878;
+    box-shadow: 0px -1px 21px -11px #787878;
+    padding: 1em 1.5em 3em 1.5em;
     display: flex;
+    position: relative;
 }
 
 .filters {
@@ -234,6 +383,7 @@ h4 a:hover {
 
 .checkboxes {
     width: 60%;
+    margin-bottom: 1em;
 }
 
 .filter-container {
@@ -258,13 +408,62 @@ h4 a:hover {
     width: 80%;
 }
 
+.filters-button {
+    position: absolute;
+    bottom: 2%;
+    right: 1%;
+}
+
+.filters-button button, .checkboxes-button button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: #563838b4;
+    text-transform: capitalize;
+    font-weight: 700;
+}
+
+.checkboxes-button {
+    margin: 0 0 0.8em 0;
+}
+
+.checkboxes-button button {
+    padding: 0;
+}
+
+@media (max-width: 1100px) {
+    .gemspage-wrapper {
+        width: 93%;
+    }
+}
+
 @media (max-width: 700px) {
 
-    .container {
-        width: 97%;
-    }    
+    .cats {
+        padding: 1em;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background-color: #eee0e149;
+    }
+
+    .cat_button {
+        font-size: 13px;
+        width: fit-content;
+        min-width: 31%;
+        text-align: center;
+        margin-right: 0.3em;
+        margin-bottom: 0.6em;
+        padding: 0;
+        cursor: pointer;
+        transition: color .3s ease-out;
+        transition: background .3s ease-out;
+    }
+
     .filter-block {
         display: block;
+        padding: 1.5em 1.2em;
     }
 
     .filters {
@@ -277,6 +476,21 @@ h4 a:hover {
 
     .filter {
         width: 100%;
+    }
+
+    .checkbox-block {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 0.8em;
+    }
+
+    .checkbox-block__item {        
+        width: 45%;        
+    }
+
+    .checkbox-block__item {
+        margin-right: 1em;
     }
 }
 </style>

@@ -3,6 +3,7 @@ import HomePage from '@/pages/HomePage';
 import GemsPage from "@/pages/GemsPage";
 import SortedGemsPage from '@/pages/SortedGemsPage';
 import Gem from '@/pages/Gem.vue';
+import Glossarium from '@/pages/glossarium/Glossarium.vue';
 import Admin from '@/pages/Admin.vue';
 
 const routes = [
@@ -22,9 +23,20 @@ const routes = [
     component: SortedGemsPage,
   },
   {
+    path: "/gems/:id/:subcatId",
+    name: "sortedSubCatGems",
+    component: SortedGemsPage,
+  },
+  {
     path: "/collection/:id",
     name: "gem",
     component: Gem,
+  },
+
+  {
+    path: "/glossarium",
+    name: "gloss",
+    component: Glossarium,
   },
 
   {

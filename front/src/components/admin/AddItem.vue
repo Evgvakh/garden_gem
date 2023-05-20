@@ -1,74 +1,82 @@
 <template>    
     <div class="add-item__wrapper">
-        <div class="add-item__header">
-            <h2>Внимание!</h2>
-            <p>Все данные в виде выпадающих списках (category, subcategory и т.д.) обязательны к заполнению.</p>
-            <p>Все текстовые данные также обязательны к заполнению. Если на момент заполнения данные для отправки в базу данных вам не известны,
-                введите случайный текст <u>(например "выаыкаауывымып")</u> и измените его в дальнейшем с помощью меню редактирования.
-            </p>
-            <p>Поля добавления фото и сертификата к заполнению не обязательны, можно дополнить при редактировании.</p>
-            <p>Для добавления нескольких фото - клик по полю выбора, выбрать файл, добавить и снова клик по меню выбора.</p>
-            <p>При редактировании камня, всплывающие меню необходимо проставить заново. Изначальные значения находятся в первом, неактивном всплывающем меню. 
-                Остальные значения (цена, вес, описние и т.д.) выводятся автоматически и, при отсутствии необходимости их изменения, можно их не модифицировать.</p>
+        <Hints :style="{marginBottom: '3em'}"/>
+        <div>
+            <h4 style="text-transform: uppercase; margin-bottom: 0.6em;">{{ menuType }} item</h4>
+            <div v-if="menuType == 'edit'">
+                <h5>Вы хотите изменить: ID {{ gem.id }}, {{ gem.color }} {{ gem.category }} {{ gem.weight.toFixed(2) }}ct., 
+            {{ gem.cut }} cut, ${{ (gem.weight * gem.price).toFixed(0) }}, ${{ gem.price.toFixed(2) }}/кт</h5>
+            </div>
         </div>
-        <div v-if="menuType == 'edit'"><h5>Вы хотите изменить: {{ gem.color }} {{ gem.category }} {{ gem.weight.toFixed(2) }}ct. 
-            {{ gem.cut }} cut ${{ (gem.weight * gem.price).toFixed(0) }}, ${{ gem.price.toFixed(2) }}/кт</h5></div>
         <div class="selects">
             <div class="select-group">
                 <label for="cats">Category</label>
-                <Select id="cats" :options="cats" :title="'Category'" :name="'category'" v-model="id_category" :optionId="this.id_category" />
+                <AdminSelect id="cats" :options="cats" :title="'Category'" :name="'category'" v-model="id_category" :optionId="this.id_category" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_category', this.id_category, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="subcats">Subcategory</label>
-                <Select id="subcats" :options="subcats" :title="'Subcategory'" :name="'subcategory'"
-                    v-model="id_subcategory" :optionId="this.id_subcategory"/>
+                <AdminSelect id="subcats" :options="subcats" :title="'Subcategory'" :name="'subcategory'"
+                    v-model="id_subcategory" :optionId="this.id_subcategory" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_subcategory', this.id_subcategory, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="colors">Color</label>
-                <Select id="colors" :options="colors" :title="'Color'" :name="'color'" v-model="id_color" :optionId="this.id_color"/>
+                <AdminSelect id="colors" :options="colors" :title="'Color'" :name="'color'" v-model="id_color" :optionId="this.id_color" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_color', this.id_color, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="origins">Origin</label>
-                <Select id="origins" :options="origins" :title="'Origin'" :name="'origin'" v-model="id_origin" :optionId="this.id_origin"/>
+                <AdminSelect id="origins" :options="origins" :title="'Origin'" :name="'origin'" v-model="id_origin" :optionId="this.id_origin" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_origin', this.id_origin, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="sets">Set</label>
-                <Select id="sets" :options="sets" :title="'Set'" :name="'set'" v-model="id_set" :optionId="this.id_set"/>
+                <AdminSelect id="sets" :options="sets" :title="'Set'" :name="'set'" v-model="id_set" :optionId="this.id_set" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_set', this.id_set, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="cuts">Cut</label>
-                <Select id="cuts" :options="cuts" :title="'Cut'" :name="'cut'" v-model="id_cut" :optionId="this.id_cut"/>
+                <AdminSelect id="cuts" :options="cuts" :title="'Cut'" :name="'cut'" v-model="id_cut" :optionId="this.id_cut" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_cut', this.id_cut, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="treatmts">Treatment</label>
-                <Select id="treatmts" :options="treatments" :title="'Treatment'" :name="'treatment'"
-                    v-model="id_treatment" :optionId="this.id_treatment"/>
+                <AdminSelect id="treatmts" :options="treatments" :title="'Treatment'" :name="'treatment'"
+                    v-model="id_treatment" :optionId="this.id_treatment" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_treatment', this.id_treatment, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="clars">Clarity</label>
-                <Select id="clars" :options="clarities" :title="'Clarity'" :name="'clarity'" v-model="id_clarity" :optionId="this.id_clarity"/>
+                <AdminSelect id="clars" :options="clarities" :title="'Clarity'" :name="'clarity'" v-model="id_clarity" :optionId="this.id_clarity" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_clarity', this.id_clarity, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="avails">Available</label>
-                <Select id="avails" :options="avails" :title="'Available'" :name="'available'" v-model="id_avail" :optionId="this.id_avail"/>
+                <AdminSelect id="avails" :options="avails" :title="'Available'" :name="'available'" v-model="id_avail" :optionId="this.id_avail" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_availability', this.id_availability, this.gem.id)">Edit</button>
             </div>
             <div class="select-group">
                 <label for="sales">Sale?</label>
-                <Select id="sales" :options="sales" :title="'Sale'" :name="'sale'" v-model="id_sale" :optionId="this.id_sale"/>
+                <AdminSelect id="sales" :options="sales" :title="'Sale'" :name="'sale'" v-model="id_sale" :optionId="this.id_sale" />
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('id_is_onsale', this.id_sale, this.gem.id)">Edit</button>
             </div>
         </div>
         <div class="inputs">
             <div class="inputs-group">
                 <label for="weight">Weight <span>(ввод через точку)</span></label>
-                <input type="number" step="0.01" id="weight" v-model="weight"> 
+                <input type="number" step="0.01" id="weight" v-model="weight">
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('weight', this.weight, this.gem.id)">Edit</button> 
             </div>
             <div class="inputs-group">
                 <label for="price">Price <span>(за карат, ввод через точку)</span></label>
                 <input type="number" step="1" id="price" v-model="price">
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('price', this.price, this.gem.id)">Edit</button>
             </div>
             <div class="inputs-group">
                 <label for="saleprice">Sale price <span>(указать 0 если нет акции)</span></label>
                 <input type="number" step="1" id="saleprice" v-model="saleprice">
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('sale_price', this.saleprice, this.gem.id)">Edit</button>
             </div>
         </div>
         <div class="textareas">
@@ -76,29 +84,40 @@
                 <label for="name">Name <span>(общие данные о камне свободным текстом для поиска строке поиска, на странице нигде выводиться не будет. 
                     Пример: red ruby singe set cushion cut 2.32 ct mozambique )</span></label>
                 <textarea name="" id="name" cols="30" rows="2" v-model="name"></textarea>
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('name', this.name, this.gem.id)">Edit</button>
             </div>
             <div class="textareas-group">
                 <label for="descriprion">Description</label>
                 <textarea name="" id="descriprion" cols="30" rows="6" v-model="description"></textarea>
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('description', this.description, this.gem.id)">Edit</button>
             </div>
             <div class="textareas-group">
                 <label for="video">Video link <span>(ссылка на  видео)</span></label>
                 <textarea name="" id="video" cols="30" rows="1" v-model="video"></textarea>
+                <button v-if="menuType == 'edit'" @click.prevent="editOneField('video', this.video, this.gem.id)">Edit</button>
             </div>
         </div>
-        <div class="delete-img__wrapper" v-if="menuType === 'edit'">
-            <div class="delete-img" v-for="img in gem.images">
-                <div class="delete-img__img" :style="{backgroundImage: `url(http://localhost:8081/${img.img})`}"></div>
-                <div> 
-                    <button :id="img.id" class="delete-img__button" @click.prevent="handleDeleteImgFromDB(img.id)">Delete / Удалить</button>                   
+        <div v-if="menuType === 'edit'" class="delete-img__main">
+            <h4>Images / Фото</h4>
+            <div class="delete-img__wrapper">
+                <div class="delete-img" v-for="img in gem.images">
+                    <div class="delete-img__img" :style="{backgroundImage: `url(http://localhost:8081/${img.img})`}"></div>
+                    <div>
+                        <button :id="img.id" class="delete-img__button" @click.prevent="handleDeleteImgFromDB(img.id, gem.id)">Delete / Удалить</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="confirm-delete-img">
-            <div></div>
+        <div v-if="menuType === 'edit' && this.gem.certificate.length > 0" class="delete-cert__main">
+            <h4>Certificate / Сертификат</h4>
+            <div class="delete-cert">
+                <div class="delete-cert__item"  :style="{backgroundImage: `url(http://localhost:8081/${this.gem.certificate})`}"></div>
+                <button @click.prevent="handleDeleteCertFromDB(this.gem.id)">Delete</button>
+            </div>
         </div>
-        <div >
-            <q-file filled bottom-slots v-model="imgToUpload" multiple append label="Images/Фото" counter style="margin-bottom: 1em;">
+        
+        <div class="add-media__main">
+            <q-file filled bottom-slots v-model="imgToUpload" multiple append label="Images/Фото" counter>
                 <template v-slot:prepend>
                     <q-icon name="cloud_upload" @click.stop.prevent />
                 </template>
@@ -107,8 +126,9 @@
                 </template>
                 <template v-slot:hint>
                     Первой загружать фото для обложки, потом остальные
-                </template>
+                </template>                
             </q-file>
+            <button v-if="menuType === 'edit'" class="addMedia" @click.prevent="addMedia(gem.id, this.imgToUpload, '/upload/img', 'img')">Add Image / Добавить Фото</button>
             <q-file filled bottom-slots v-model="certificateToUpload" label="Certificate/Сертификат" counter>
                 <template v-slot:prepend>
                     <q-icon name="cloud_upload" @click.stop.prevent />
@@ -120,23 +140,23 @@
                     Сертификат
                 </template>
             </q-file>
-            <!-- <button @click.prevent="imgTest">ADD IMAGES</button> -->
+            <button v-if="menuType === 'edit'" class="addMedia" @click.prevent="addMedia(gem.id, this.certificateToUpload, '/upload/certs', 'certificate')">Add Certificate / Добавить Сертификат</button>
         </div>
         <Toast />
         <ConfirmDialog></ConfirmDialog>
-        <button class="main-button" v-if="this.menuType === 'add'" @click.prevent="confirm1()">Add item</button>
-        <button class="main-button" v-if="this.menuType === 'edit'" @click.prevent="confirm2()">Edit item</button>
+        <button class="main-button" v-if="this.menuType === 'add'" @click.prevent="confirm1()">Add item</button>        
     </div>
 </template>
 
 <script>
 import axios from '../../axios';
-import Select from './Select.vue'
+import AdminSelect from '@/components/admin/AdminSelect.vue'
 import ConfirmDialog from "primevue/confirmdialog";
-
+import Hints from '@/components/admin/Hints.vue'
+import { date } from 'quasar';
 export default {
     components: {
-        Select
+        AdminSelect, Hints        
     },
 
     props: {
@@ -174,6 +194,7 @@ export default {
             sales: [],
             imgToUpload: [],
             certificateToUpload: '',
+            serverResponse: ''
         }
     },
     methods: {
@@ -235,7 +256,7 @@ export default {
                 treatment: this.id_treatment,
                 clarity: this.id_clarity,
                 avail: this.id_avail,
-                sale: this.id_sale
+                sale: this.id_sale,                
             },
                 {
                     headers: {
@@ -245,7 +266,9 @@ export default {
                 
             const item_id = res.data.Message
             if (this.imgToUpload.length > 0) await this.addMedia(item_id, this.imgToUpload, '/upload/img', 'img');
-            if (this.certificateToUpload !== '') await this.addMedia(item_id, this.certificateToUpload, '/upload/certs', 'certificate');         
+            if (this.certificateToUpload !== '') await this.addMedia(item_id, this.certificateToUpload, '/upload/certs', 'certificate');
+            this.serverResponse = res.data.Message
+            console.log(this.serverResponse)        
         },
 
         async addMedia(id, items, url, type) {
@@ -264,7 +287,7 @@ export default {
             };
 
             const { data: imgData } = await axios.post(url, formData, headers);
-
+            console.log(imgData)
             if (type == 'img') {
                 imgData.forEach(async img => {
                     const res = await axios.post("/admin/addImgs", {
@@ -276,7 +299,7 @@ export default {
                                 'Content-Type': 'application/json'
                             }
                         })
-                    console.log(res)
+                    console.log(res)                    
                 })
             } else if (type == 'certificate') {
                 const res = await axios.post("/admin/addCertificate", {
@@ -287,8 +310,7 @@ export default {
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                })
-                console.log(res)
+                })                
             }
         },
         
@@ -297,9 +319,13 @@ export default {
                 message: 'Are you sure you want to proceed?',
                 header: 'Confirmation',
                 icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                    this.handleForm();
-                    this.$toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 });
+                accept: async  () => {
+                    await this.handleForm();
+                    if (this.serverResponse) {
+                        this.$toast.add({ severity: 'info', summary: 'Confirmed', detail: `Item added with ID: ${this.serverResponse} / Товар с ID  ${this.serverResponse} успешно добавлен`, life: 3000 });
+                    } else {
+                        this.$toast.add({ severity: 'error', summary: 'Confirmed', detail: `Item was not added, please verify al the fields / Не добавлено. Проверьте заполнение всех полей`, life: 3000 });
+                    }
                 },
                 reject: () => {
                     this.$toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
@@ -322,8 +348,24 @@ export default {
             });
         },
 
-        handleDeleteImgFromDB(id) {
-            console.log(id)
+        async handleDeleteImgFromDB(id, gemId) {
+            const { data } = await axios.delete(`/admin/deleteImg/${id}`);
+            this.$emit('confirmEdit', 'image', gemId)
+        },
+
+        async handleDeleteCertFromDB(id) {
+            const { data } = await axios.patch(`/admin/deleteCert/${id}`);
+            this.$emit('confirmEdit', 'certificate', id)            
+        }, 
+
+        async editOneField(type, field, id) {
+            const { data } = await axios.patch(`/admin/editfield/${type}`, {
+                field: field,
+                id: id
+            })
+            if (data.Message.affectedRows >= 1) {
+                this.$emit('confirmEdit', type, id)
+            }
         },
 
         bindValues() {
@@ -366,20 +408,20 @@ export default {
 
 <style scoped>
 
+* button {
+    cursor: pointer;
+    padding: 0.3em 0.7em;
+    border-radius: 7px;
+    font-size: 15px;
+}
 .add-item__wrapper {
     padding: 3em;
 }
 
-.add-item__header {
-    text-align: center;
-    font-size: 16px;
-    margin-bottom: 4em;
-}
-
-.add-item__header h2 {
+h4 {
+    line-height: 1em;
+    font-size: 26px;
     padding: 0; margin: 0;
-    font-size: 42px;
-    color: red;
 }
 .selects {
     display: flex;
@@ -391,6 +433,7 @@ export default {
 .select-group {
     width: 44%;
     display: flex;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 1em;
     font-size: 16px;
@@ -399,9 +442,14 @@ export default {
 }
 
 .select-group label {
-    min-width: 20%;
-    margin-right: 1em;
+    min-width: 25%;    
     font-weight: 700;
+}
+
+.selects button {
+    margin-left: auto;
+    margin-right: 1em;
+    width: 20%;    
 }
 
 .inputs {
@@ -435,6 +483,10 @@ export default {
     font-weight: 700;
 }
 
+.inputs button {    
+    margin-top: 1em;
+}
+
 .textareas {
     margin-top: 1em;
     font-size: 16px;
@@ -449,6 +501,11 @@ export default {
 .textareas-group label {
     margin-bottom: 0.2em;
     font-weight: 700;
+}
+
+.textareas button {        
+    width: 50%; margin: 0 auto;
+    margin-top: 1em;
 }
 
 .add-item__wrapper label span {
@@ -471,7 +528,8 @@ export default {
 }
 
 .delete-img {    
-    width: 30%;   
+    width: 30%;
+    margin-bottom: 1em;   
 }
 
 .delete-img__img {
@@ -485,9 +543,26 @@ export default {
 
 button.delete-img__button {
     display: block;
-    margin: 0 auto;
-    font-size: 15px;
-    margin-top: 1em;
+    margin: 0 auto;    
+    margin-top: 0.6em;
+}
+
+.delete-cert {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 2em;
+}
+
+.delete-cert__item {
+    width: 200px; height: 200px;
+    background-position: center center;
+    background-size: cover;
+}
+
+.addMedia {
+    margin: 1em 0 2em 0;
 }
 button.main-button {
     display: block;
@@ -501,6 +576,7 @@ button.main-button {
 }
 
 h5 {
-    color: blue;
+    color:  #523838;
+    margin: 1em 0;
 }
 </style>

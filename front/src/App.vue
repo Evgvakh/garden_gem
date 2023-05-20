@@ -3,8 +3,25 @@
     <div v-if="width <= 1100 && !isSidebarVisible && this.$route.path != '/admin'" class="burger" style="position: fixed; top: 0; left: 0; z-index: 200;" >
       <font-awesome-icon class="burger-icon" icon="fa-solid fa-bars" @click="changeSidebarStyle"/>
     </div>
-    <Sidebar v-if="width > 1100 && this.$route.path != '/admin'" class="sidebar" :gems="this.gems" @newcat="categoryChange" />
-    <SidebarMobile v-if="isSidebarVisible && width <= 1100" class="sidebar-mobile" :gems="this.gems" @newcat="categoryChange" @setVisibility="changeSidebarStyle" />
+    <Sidebar 
+      v-if="width > 1100 && this.$route.path != '/admin'" 
+      class="sidebar" 
+      :gems="this.gems" 
+      @newcat="categoryChange" 
+      :lang="lang"
+      @changeLang="langChange" 
+      :cats="categories"
+    />
+    <SidebarMobile 
+      v-if="isSidebarVisible && width <= 1100" 
+      class="sidebar-mobile" 
+      :gems="this.gems"
+      @newcat="categoryChange" 
+      :lang="lang" 
+      @changeLang="langChange" 
+      :cats="categories" 
+      @setVisibility="changeSidebarStyle" 
+    />
     <div :class="[width > 1100 && width != 0 && this.$route.path != '/admin' ? 'router' : 'router_resize']">
       <router-view></router-view>
     </div>
@@ -24,28 +41,27 @@ export default {
 
   data() {
     return {
-      gems: [],
-      cats: [],
+      gems: [],      
       categoryToShow: 0,
       width: 0,
-      isSidebarVisible: false
+      isSidebarVisible: false,
+      lang: 'en'
     }
   },
 
-  provide() {
-    let cats = {}
-    Object.defineProperty(cats, 'type', { enumerable: true, get: () => this.cats })
-    return { cats }
-  },
-
   methods: {
-    async uploadFile() {
-      
-    },
-
     async fetchItems() {
-      const { data } = await axios.get('/gems')
-      this.gems = data;
+      let gems = []
+      if (this.lang === 'en') {
+        const { data } = await axios.get('/gems')
+        gems = data
+      } else {
+        const { data } = await axios.get('/ru/gems')
+        gems = data
+      }
+      this.gems = gems.filter(gem => {
+        return gem.availability === 'yes'
+      });
     },
 
     categoryChange(id) {
@@ -56,33 +72,53 @@ export default {
       this.width = window.innerWidth;
     },
 
-    getCats() {
-      this.gems.map((gem, i) => {
-        let item = { id: gem.id_category, name: gem.category }
-        if (!this.cats.some(cat => cat.id == item.id)) {
-          this.cats.push(item);
-        }
-      });
-
-      let newarr = this.cats.sort((cat1, cat2) => {
-        return cat1.name.localeCompare(cat2.name);
-      })
-      this.cats = newarr;      
-    },
-
     changeSidebarStyle() {
       this.isSidebarVisible = !this.isSidebarVisible;
+    },
+
+    async langChange(lang) {
+      this.lang = lang
+    },
+    setLangFromStorage() {
+      if (localStorage.getItem('gemGardenLang')) {
+        this.lang = localStorage.getItem('gemGardenLang');
+      }
     }
   },
 
   async mounted() {
-    await this.fetchItems();
-    this.getCats();
+    await this.fetchItems();    
+    console.log(process.env)
+  },
+
+  computed: {
+    categories() {
+      let arr = [];
+      this.gems.map((gem, i) => {
+        let item = { id: gem.id_category, name: gem.category }
+        if (!arr.some(cat => cat.id == item.id)) {
+          arr.push(item);
+        }
+      });
+
+      let newarr = arr.sort((cat1, cat2) => {
+        return cat1.name.localeCompare(cat2.name);
+      })
+      return newarr;
+    }
+  },
+  
+
+  watch: {
+    async lang() {
+      await this.fetchItems();      
+    }
   },
 
   created() {
     window.addEventListener('resize', this.updateWidth);
     this.updateWidth()
+    this.setLangFromStorage()
   }
 };
 </script>
@@ -99,7 +135,7 @@ export default {
 }
 
 .sidebar-mobile {
-  width: 60%;
+  width: 55%;
   z-index: 300;
 }
 
@@ -116,13 +152,15 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 7px;
+  width: 6px;
+  height: 30px;
   background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  width: 8px;
-  background-color: #563838;
+  width: 6px;  
+  background: rgb(163,211,111);
+    background: linear-gradient(180deg, rgba(163,211,111,0.8799894957983193) 0%, rgba(73,153,156,1) 55%);
   border-radius: 3px;
   box-shadow: 1px 1px 10px #f3faf7;
 }
@@ -143,5 +181,14 @@ export default {
   font-size: 32px;
   line-height: 1em;
   cursor: pointer;
+}
+
+@media (max-width: 450px) {
+  .burger-icon {
+    font-size: 26px;
+  }
+  .sidebar-mobile {
+    width: 65%;    
+  }
 }
 </style>

@@ -2,7 +2,7 @@
     <div class="container">
         <Header v-model="searchQuery" placeholder="Find your gem by name" :isSearchNeeded="true" />
         <div class="recently_added">
-            <ProgressSpinner v-if="isLoading" style="width: 150px; height: 150px; position: fixed; top:45%; left: 55%"
+            <ProgressSpinner v-if="isLoading" class="progress-spinner" 
                 strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             <h3 v-if="!isLoading">Recently added</h3>
             <Carousel v-if="!isLoading" :value="items" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions"
@@ -10,7 +10,7 @@
                 <template #item="slotProps">
                     <div class="item text-center">
                         <div class="item__img"
-                            :style="{ backgroundImage: `url(https://gemgarden.herokuapp.com/uploads/img/IMG_0727.jpg)` }">
+                            :style="{ backgroundImage: slotProps.data.titleImg.length > 0 ? `url(http://localhost:8081/${slotProps.data.titleImg})` : 'none' }">
                             <div class="item__text">
                                 <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
                                     slotProps.data.color }} {{ slotProps.data.category }}</a></h4>
@@ -20,6 +20,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- <div class="item__img"
+                            :style="{ backgroundImage: `url(https://gemgarden.herokuapp.com/${slotProps.data.images[0]["img"] ? slotProps.data.images[0]["img"] : uploads/img/IMG_0727.jpg})` }">
+                            <div class="item__text">
+                                <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
+                                    slotProps.data.color }} {{ slotProps.data.category }}</a></h4>
+                                <div class="price_weight">
+                                    <h6>${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
+                                    <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
+                                </div>
+                            </div>
+                        </div> -->
+
                     </div>
                 </template>
             </Carousel>
@@ -52,22 +65,39 @@
                     <p>Gem</p>
                 </div>
                 <div class="checkbox-block cat-filter">
-                    <Checkbox class="checkbox-block__item" v-for="cat in cats" :key="cat.id" :label="cat.name"
-                        v-model="filterCats" @addCat="addCatToArray" />
+                    <Checkbox class="checkbox-block__item" v-for="cat in cats.slice(0, isAllCats ? cats.length + 1 : 8)" :key="cat.id" :label="cat.name"
+                        v-model="filterCats" @addCat="addCatToArray" />                    
+                </div>
+                <div class="checkboxes-button">
+                        <button @click="popUpCats">{{ checkboxesButtonText[Number(checkboxButtonTextIndex)] }}</button>
                 </div>
                 <div v-if="isAllFilters">
                     <div>
                         <p>Cut</p>
-                    </div>                
+                    </div>
                     <div class="checkbox-block cut-filter">
                         <Checkbox class="checkbox-block__item" v-for="item in this.cut" :key="item.id" :label="item"
                             v-model="filterCuts" @addCat="addCutToArray" />
                     </div>
+                    <div>
+                        <p>Color</p>
+                    </div>
+                    <div class="checkbox-block cut-filter">
+                        <Checkbox class="checkbox-block__item" v-for="item in this.colors" :key="item.id" :label="item"
+                            v-model="filterColors" @addCat="addColorToArray" />
+                    </div>
+                    <div>
+                        <p>Sales</p>
+                    </div>
+                    <div class="checkbox-block cut-filter">
+                        <Checkbox class="checkbox-block__item" v-for="item in this.sale" :key="item.id" :label="item"
+                            v-model="filterColors" @addCat="addSaleToArray" />
+                    </div>
                 </div>
             </div>
-        </div>
-        <ItemsCards v-if="!isLoading && this.filteredCutGems.length > 0" :gems="this.filteredCutGems" />
-        <FailedSearch v-else-if="this.filteredCutGems.length == 0 && !isLoading" />
+        </div>        
+        <ItemsCards v-if="!isLoading && this.filteredSaleGems.length > 0" :gems="this.filteredSaleGems" />
+        <FailedSearch v-else-if="this.filteredSaleGems.length == 0 && !isLoading" />
     </div>
 </template>
 
@@ -78,6 +108,7 @@ import Header from '@/components/header/Header.vue';
 import Filter from '@/components/UI/Filter.vue';
 import Checkbox from '@/components/UI/Checkbox.vue';
 import FailedSearch from '@/components/FailedSearch.vue';
+import 'primeicons/primeicons.css';
 
 export default {
     components: {
@@ -85,7 +116,7 @@ export default {
         Header,
         Filter,
         Checkbox,
-        FailedSearch
+        FailedSearch        
     },
 
     data() {
@@ -96,6 +127,10 @@ export default {
             filterCats: [],
             cut: [],
             filterCuts: [],
+            colors: [],
+            filterColors: [],
+            sale: ['sale'],
+            filterSale: [],
             isLoading: false,
             limit: 20,
             offset: 0,
@@ -113,8 +148,11 @@ export default {
             maxPrice: 0,
             maxWeight: 0,
             isAllFilters: false,
+            isAllCats: false,
             filterButtonText: ['more filters', 'less filters'],
+            checkboxesButtonText: ['more gems', 'less gems'],
             buttonTextIndex: false,
+            checkboxButtonTextIndex: false,
             responsiveOptions: [
                 {
                     breakpoint: '1524px',
@@ -143,17 +181,19 @@ export default {
         async fetchCarouselItems() {
             this.isLoading = true;
             const { data } = await axios.get('/gemscarousel');
-            this.items = data;
+            this.items = data.filter(el => {
+                return el.availability == 'yes'
+            });
             this.isLoading = false;
         },
-
         async fetchItems() {
             this.isLoading = true;
             const { data } = await axios.get(`/gems`);
-            this.gems = data;
+            this.gems = data.filter(el => {
+                return el.availability == 'yes'
+            });;
             this.isLoading = false;
         },
-
         async fetchCats() {
             this.isLoading = true;
             const { data } = await axios.get(`/cats`);
@@ -165,9 +205,8 @@ export default {
             const sortedArr = [...this.gems].sort((gem1, gem2) => {
                 return gem2.price - gem1.price
             })
-            this.maxPrice = Number(sortedArr[0].price);
+            this.maxPrice = Number(sortedArr[0].price * sortedArr[0].weight);
         },
-
         calculateMaxWeight() {
             const sortedArr = [...this.gems].sort((gem1, gem2) => {
                 return gem2.weight - gem1.weight
@@ -182,7 +221,6 @@ export default {
                 this.filterCats.splice(this.filterCats.indexOf(cat), 1)
             }
         },
-
         addCutToArray(cut) {
             if (!this.filterCuts.includes(cut)) {
                 this.filterCuts.push(cut);
@@ -190,34 +228,78 @@ export default {
                 this.filterCuts.splice(this.filterCuts.indexOf(cut), 1)
             }
         },
+        addColorToArray(color) {
+             if (!this.filterColors.includes(color)) {
+                this.filterColors.push(color);
+            } else {
+                this.filterColors.splice(this.filterColors.indexOf(color), 1)
+            }
+        },
+        addSaleToArray(sale) {
+             if (!this.filterSale.includes(sale)) {
+                this.filterSale.push(sale);
+            } else {
+                this.filterSale.splice(this.filterSale.indexOf(sale), 1)
+            }
+        },
 
         popUpFilters() {
             this.isAllFilters = !this.isAllFilters;
             this.buttonTextIndex = !this.buttonTextIndex
             this.filterCuts = []
+            this.filterSale = []
+            this.filterColors = []            
+        },
+        popUpCats() {
+            this.isAllCats = !this.isAllCats;
+            this.checkboxButtonTextIndex = !this.checkboxButtonTextIndex;
+            this.resetCatFilters()            
         },
 
         getCut() {
+            let arr = []
             this.gems.map(gem => {
-                this.cut.push(gem.cut)
+                arr.push(gem.cut)
             })
-            let newArr = this.cut.reduce(function (accumulator, currentValue) {
+            let newArr = arr.reduce(function (accumulator, currentValue) {
                 if (accumulator.indexOf(currentValue) === -1) {
                     accumulator.push(currentValue);
                 }
                 return accumulator;
             }, []);
             this.cut = newArr;
+        },
+        getColor() {
+            let arr = []
+            this.gems.map(gem => {
+                arr.push(gem.color)
+            })
+            let newArr = arr.reduce(function (accumulator, currentValue) {
+                if (accumulator.indexOf(currentValue) === -1) {
+                    accumulator.push(currentValue);
+                }
+                return accumulator;
+            }, []);
+            this.colors = newArr;
+        },        
+
+        resetCatFilters() {
+            this.filterCats.forEach(cat => {
+                if (this.cats.slice(8, this.cats.length + 1).some(item => item.name === cat)) {
+                    this.filterCats.splice(this.filterCats.indexOf(cat), 1)
+                }
+            })
         }
     },
 
     async mounted() {
         await this.fetchCarouselItems()
-        await this.fetchItems(); 
-        await this.fetchCats();       
+        await this.fetchItems();
+        await this.fetchCats();
         this.calculateMaxPrice();
-        this.calculateMaxWeight();        
+        this.calculateMaxWeight();
         this.getCut();
+        this.getColor();        
     },
 
     computed: {
@@ -252,17 +334,23 @@ export default {
             }
         },
 
-        cutsFiltered() {
-            let cutTemp = []
-            this.filteredGems.map(gem => {
-                cutTemp.push(gem.cut)
-            })
-            return cutTemp.reduce(function (accumulator, currentValue) {
-                if (accumulator.indexOf(currentValue) === -1) {
-                    accumulator.push(currentValue);
-                }
-                return accumulator;
-            }, []);            
+        filteredColorGems() {
+            if (this.filterColors.length > 0) {
+                return this.filteredCutGems.filter(item => {
+                    return this.filterColors.some(color => item.color.includes(color))
+                })
+            } else {
+                return this.filteredCutGems;
+            }
+        },
+        filteredSaleGems() {
+            if (this.filterSale.length > 0) {
+                return this.filteredColorGems.filter(item => {
+                    return item.onsale == 'yes'
+                })
+            } else {
+                return this.filteredColorGems;
+            }
         }
     },
 
@@ -277,29 +365,28 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@400;700&display=swap');
-
+@import 'primeicons/primeicons.css';
 h3 {
     line-height: 1em;
     margin: 4em 0 0.6em 0;
     padding: 0;
     text-align: center;
-    font-size: 22px;
-    font-family: 'PT Serif', serif;
+    font-size: 24px;    
     font-family: 'Baloo Tamma 2', cursive;
     animation: changeColor 1s infinite;
 }
 
 @keyframes changeColor {
     0% {
-        color: black;
+        color: rgba(73,153,156,1);
     }
 
     25% {
-        color: #563838;
+        color: #56383896;
     }
 
     50% {
-        color: #77262bbb;
+        color: rgba(73,153,156,1)
     }
 
     75% {
@@ -309,6 +396,13 @@ h3 {
     100% {
         color: black;
     }
+}
+
+.progress-spinner {
+    width: 150px;
+    height: 150px;
+    position: fixed; 
+    top:45%; left: 55%
 }
 
 h4 a {
@@ -353,8 +447,12 @@ h4 a:hover {
     padding: 0;
     margin: 0 2em;
     background-color: #563838;
-    height: 220px;
-    min-width: 200px;
+    height: 230px;
+    
+}
+
+.p-carousel-item {
+    border-radius: 20px;
 }
 
 .item__img {
@@ -364,8 +462,9 @@ h4 a:hover {
     background-position: center center;
     position: relative;
     overflow: hidden;
-    -webkit-box-shadow: inset 0px 0px 26px -6px #000000;
-    box-shadow: inset 0px 0px 26px -6px #000000;
+    -webkit-box-shadow: inset 0px 0px 56px -0px #000000;
+    box-shadow: inset 0px 0px 56px 0px #000000;
+    
 }
 
 .item__text {
@@ -397,32 +496,31 @@ h4 a:hover {
     padding: 1.3em;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-    background-color: #eee0e149;
+    justify-content: flex-start;    
+    background-color: rgba(73, 153, 156, 0.100);
+    
 }
 
 .cat_button {
     background-color: transparent;
     border: 1px solid transparent;
-    border-radius: 23px;
-    color: #77262bbb;
+    border-radius: 23px;    
+    color: #554c4c;
     text-transform: uppercase;
     font-family: 'Open Sans', sans-serif;
     font-weight: 500;
     font-size: 14px;
     width: fit-content;
-    min-width: 10%;
-    margin-right: 0.7em;
-    margin-bottom: 0.6em;
+    min-width: 19%;
+    margin-right: 0.3em;
+    margin-bottom: 1.5em;
     padding: 0.2em 0.5em;
     cursor: pointer;
     transition: color .3s ease-out;
     transition: background .3s ease-out;
 }
-
-.cat_button:hover {
-    background-color: #77262bbb;
-    color: white;
+.cat_button:hover {    
+    color:  rgb(99, 102, 241);
 }
 
 .checkbox-block {
@@ -432,9 +530,10 @@ h4 a:hover {
 }
 
 .checkbox-block__item {
-    margin-right: 0.3em;
+    margin-right: 0.2em;
+    margin-bottom: 0.5em;
     width: fit-content;
-    min-width: 23%;
+    min-width: 24%;
 }
 
 .checkboxes div p {
@@ -445,11 +544,11 @@ h4 a:hover {
 .filter-block {
     background-color: #e0e8f349;
     border-top: 1px solid rgba(168, 149, 149, 0.329);
-    -webkit-box-shadow: 0px -1px 29px -15px #787878;
-    box-shadow: 0px -1px 29px -15px #787878;
-    padding: 1em 3em;
+    -webkit-box-shadow: 0px -1px 21px -11px #787878;
+    box-shadow: 0px -1px 21px -11px #787878;
+    padding: 1em 1.5em 3em 1.5em;
     display: flex;
-    position: relative;    
+    position: relative;
 }
 
 .filters {
@@ -485,27 +584,76 @@ h4 a:hover {
 
 .filters-button {
     position: absolute;
-    bottom: 2%; right: 1%;
+    bottom: 2%;
+    right: 1%;
 }
 
-.filters-button button {
+.filters-button button, .checkboxes-button button {
     border: none;
     background-color: transparent;
     cursor: pointer;
     font-size: 14px;
     color: #563838b4;
     text-transform: capitalize;
+    font-weight: 700;
+}
+
+.checkboxes-button {
+    margin: 0 0 0.8em 0;
+}
+
+.checkboxes-button button {
+    padding: 0;
 }
 
 @media (max-width: 1100px) {
     .gemspage-wrapper {
         width: 93%;
     }
+
+    .progress-spinner {
+        width: 180px;
+        height: 180px;        
+        top:45%; left: 40%
+    }
+
+    .checkbox-block__item {
+        margin-right: 0.3em;
+        width: fit-content;
+        min-width: 28%;
+    }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 745px) {
+    .progress-spinner {
+        width: 80px;
+        height: 80px;        
+        top:45%; left: 40%
+    }
+    .cats {
+        padding: 1em;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background-color: #eee0e149;
+    }
+
+    .cat_button {
+        font-size: 13px;
+        width: fit-content;
+        min-width: 31%;
+        text-align: center;
+        margin-right: 0.3em;
+        margin-bottom: 0.6em;
+        padding: 0;
+        cursor: pointer;
+        transition: color .3s ease-out;
+        transition: background .3s ease-out;
+    }
+
     .filter-block {
         display: block;
+        padding: 1.5em 1.2em;
     }
 
     .filters {
@@ -520,8 +668,29 @@ h4 a:hover {
         width: 100%;
     }
 
+    .checkbox-block {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 0.8em;
+    }
+
+    .checkbox-block__item {        
+        min-width: 30%;        
+    }
+
     .checkbox-block__item {
         margin-right: 1em;
+    }    
+}
+
+@media (max-width: 745px) {
+    .checkbox-block__item {        
+        min-width: 40%;        
+    }
+
+    .checkbox-block__item label {
+        font-size: 14px;
     }
 }
 </style>

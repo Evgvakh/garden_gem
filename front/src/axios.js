@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8081',
+  baseURL: process.env.VUE_APP_LOCAL_STORE,
 });
 
 // const instance = axios.create({
-//   baseURL: "https://gemgarden.herokuapp.com",
+//   baseURL: process.env.VUE_APP_PROD_STORE,
 // });
 
 

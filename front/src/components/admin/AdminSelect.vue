@@ -1,9 +1,9 @@
 <template>
     <div>
         <select :name="name" id="" v-model="optionValue" @change="setValue">
-            <option :value="selectedCatId" disabled>{{ selectedName }}</option>
-            <option v-for="option in options" :value="option.id" :selected="value === this.optionId">{{ option.name }}</option>
-        </select>
+            <option disabled>{{ selectedName }}</option>
+            <option v-for="option in options" :value="option.id">{{ option.name }}</option>
+        </select>        
     </div>
 </template>
 

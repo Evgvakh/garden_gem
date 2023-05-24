@@ -124,6 +124,12 @@ export default {
 </script>
 
 <style>
+
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+}
+
 .app {
   display: flex;
   height: 100vh;
@@ -170,7 +176,7 @@ export default {
 }
 
 .burger {
-  width: 12%; height: 8vh;
+  width: 12%; height: 9vh;
   padding: 2% 8%;
   display: flex;
   justify-content: center; align-items: center;

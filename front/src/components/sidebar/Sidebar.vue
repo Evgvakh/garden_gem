@@ -109,11 +109,8 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Lilita+One&display=swap');
 .sidebar {
     height: 100vh;
-    overflow-y: auto;    
-
-    background: rgb(163,211,111);
-    background: linear-gradient(200deg, rgba(163,211,111,0.8799894957983193) 0%, rgba(73,153,156,1) 55%);
-    
+    overflow-y: auto;
+    background: linear-gradient(200deg, rgba(163,211,111,0.8799894957983193) 0%, rgba(73,153,156,1) 55%);    
     padding: 7em 0;
     -webkit-box-shadow: inset -21px 5px 29px -30px #0000009a; 
     box-shadow: inset -21px 5px 29px -30px #0000009a;

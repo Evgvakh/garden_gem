@@ -6,13 +6,15 @@
                     <button class="header-button" @click.prevent="clickHandler($event, 'add')">Add new item</button>
                     <button class="header-button" @click.prevent="clickHandler($event, 'list')">Edit / Delete item</button>
                     <button class="header-button" @click.prevent="clickHandler($event, 'editTables')">Add / Edit / Delete fields</button>
+                    <button class="header-button" @click.prevent="clickHandler($event, 'gloss')">Glossarium</button>
                 </div>                
             </div>
             <div >
                 <AddItem v-if="menuToShow === 'add'" :menuType="'add'"/>
                 <AddItem :gem="this.gem" :menuType="'edit'" v-if="menuToShow === 'edit'" @confirmEdit="confirmFieldUpdate" @afterDeleteImage="testHandler(id)" :fieldType="type"/>
                 <ItemsList v-if="menuToShow === 'list'" :items="gems" @editItem="getGem" @deleteItem="handleDelete"/>
-                <EditTables v-if="menuToShow === 'editTables'"/>
+                <EditTables v-if="menuToShow === 'editTables'" @confirmEdit="confirmFieldUpdate"/>
+                <GlossAdmin v-if="menuToShow === 'gloss'"/>
             </div>
         </div>
     </div>
@@ -25,13 +27,15 @@ import ItemsList from '@/components/admin/ItemsList.vue'
 import axios from '../axios';
 import EditConfirm from '@/components/UI/EditConfirm.vue';
 import EditTables from '@/components/admin/EditTables.vue';
+import GlossAdmin from '@/components/admin/GlossAdmin.vue'
 
 export default {
     components: {
         AddItem,
         EditConfirm,
         ItemsList,
-        EditTables      
+        EditTables,
+        GlossAdmin      
     },
 
     data() {
@@ -89,9 +93,7 @@ export default {
 .admin__main {
     min-height: 100vh;
 }
-.admin-header__wrapper {
-    width: 90%;
-    margin: 0 auto;
+.admin-header__wrapper {    
     display: flex;
     justify-content: space-between;
 }
@@ -123,7 +125,7 @@ img {
     background-color: rgba(51, 51, 51, 0.295);
 }
 .admin__main-wrapper {
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
     background-color: rgb(252, 252, 252);
 }

@@ -1,7 +1,7 @@
 <template>
-    <Header placeholder="Find your gem by name" :isSearchNeeded="false" :isGloss="true" :category="'Glossarium'"/>
-    <div class="gloss__content">   
-        <GlossCatsList :cats="cats" :items="items"/>
+    <Header placeholder="Find your gem by name" :isSearchNeeded="false" :isGloss="true" :category="'Glossarium'" />
+    <div class="gloss__header">
+        <GlossCatsList :cats="cats" :items="items" />
     </div>
 </template>
 
@@ -9,11 +9,14 @@
 import axios from '../../axios';
 import GlossCatsList from '@/components/glossarium/GlossCatsList.vue';
 import Header from '@/components/header/Header.vue';
+
 export default {
+
     components: {
         GlossCatsList,
         Header
     },
+
     data() {
         return {
             items: [],
@@ -49,11 +52,5 @@ export default {
 </script>
 
 <style scoped>
-.gloss__content {
-    min-height: 100vh;
-    background-image: url('http://localhost:8081/uploads/assets/360_F_214574177_KNrOwN0vfZoyCHe6Jhzjj3M8o5toy5u8.jpg');
-    background-position: center center;
-    background-size: cover;
-    /* padding-top: 11vh; */
-}
+.gloss__header {}
 </style>

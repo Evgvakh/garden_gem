@@ -5,6 +5,7 @@ import SortedGemsPage from '@/pages/SortedGemsPage';
 import Gem from '@/pages/Gem.vue';
 import Glossarium from '@/pages/glossarium/Glossarium.vue';
 import Admin from '@/pages/Admin.vue';
+import GlossText from '@/pages/glossarium/GlossText.vue';
 
 const routes = [
   {
@@ -37,6 +38,12 @@ const routes = [
     path: "/glossarium",
     name: "gloss",
     component: Glossarium,
+  },
+
+  {
+    path: "/glossarium/:id",
+    name: "glossItem",
+    component: GlossText,
   },
 
   {

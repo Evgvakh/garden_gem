@@ -1,14 +1,8 @@
 <template>
     <div class="gloss_list">
-        <div class="gloss_list__header">
-            <button @click.prevent="showItems" :class="{ active: isActive }">{{ cat }}</button>
-            <transition name="fade">
-            <div class="gloss_list__content" v-show="showList">
-
-                <GlossItem v-for="item in list" :item="item" :key="item" :id_cat="item.id_category" :cat="item.category" />
-
-            </div>
-            </transition>
+        <button>{{ cat }}</button>
+        <div class="gloss_list__content">
+            <GlossItem v-for="item in list" :item="item" :key="item" :id_cat="item.id_category" :cat="item.category" />
         </div>
     </div>
 </template>
@@ -27,9 +21,7 @@ export default {
     data() {
         return {
             list: Array || String,
-            showList: false,
-            markDown: "# dsadsa",
-            isActive: false
+            show: false
         }
     },
     methods: {
@@ -43,6 +35,7 @@ export default {
             this.isActive = !this.isActive
         }
     },
+
     mounted() {
         this.getItems();
     }
@@ -53,81 +46,41 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 .gloss_list {
-    padding: 0 2em;
-    margin-bottom: 2em;
-}
-
-.gloss_list__content {    
-    background: linear-gradient(200deg, rgba(163, 211, 111, 0.8799894957983193) 0%, rgba(73, 153, 156, 0.8799894957983193) 55%);
-    -webkit-box-shadow: 0px 6px 17px -11px #000000;
-    box-shadow: 0px 6px 17px -11px #000000;
-    width: 96%;
-    margin: 0 auto;
-    border-radius: 0 0 10px 10px;
-    padding: 2em;
-}
-
-.gloss_list__header button {    
-    background: linear-gradient(200deg, rgba(163, 211, 111, 0.9199894957983193) 0%, rgba(73, 153, 156, 1) 55%);
-    -webkit-box-shadow: 0px 5px 14px -2px #000000a6;
-    box-shadow: 0px 5px 14px -2px #000000a6;
-    border: none;
-    width: 65%;
-    display: block;
-    margin: 0 auto;
-    padding: 0.4em;
-    font-size: 24px;
-    font-weight: 500;
-    font-family: 'Balsamiq Sans', cursive;
-    border-radius: 35px;
-    color: white;
-    text-transform: uppercase;
-    cursor: pointer;
-    letter-spacing: 3px;
-    transition: all 0.3s ease;
-    transition: padding 0.5s ease-out;
-    transition: width 0.3s ease-out;
-    
-}
-
-.gloss_list__header button:hover {
-    -webkit-box-shadow: 0px 5px 14px -1px #0000004b;
-    box-shadow: 0px 5px 14px -1px #0000004b;
-    letter-spacing: 2px;
-}
-
-.gloss_list__header button.active {
-    width: 100%;
-    padding: 0.2em;
-    -webkit-box-shadow: 0px 5px 14px -1px #0000004b;
-    box-shadow: 0px 5px 14px -1px #0000004b;
-    letter-spacing: 1px;        
-}
-
-.fade-enter-from {
-    width: 0%;
-    opacity: 0;
-}
-.fade-enter-active, .fade-leave-active {
-    transition: all 0.8s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-  width: 0;
-  
-}
-
-.fade-leave-to {
-    display: none;
+    margin: 1em;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .gloss_list__content {
-    transition: all 1.4s ease;
+    width: 96%;
+    margin: 0 auto;    
 }
 
-.gloss_list__content button {
+.gloss_list button {
+    background: transparent;
+    border: none;
+    width: fit-content;
+    display: block;
+    padding: 0.2em;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: 'Balsamiq Sans', cursive;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    transition: padding 0.5s ease-out;
+    transition: width 0.3s ease-out;
+    background: linear-gradient(200deg, rgb(222, 235, 208) 0%, rgb(171, 237, 240)55%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* color: white; */
+}
+
+.gloss_list button {
     border: none;
 }
 </style>

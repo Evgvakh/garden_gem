@@ -1,132 +1,79 @@
 import mysql from "mysql2";
 import { dbParams } from "../DB/index.js";
-
-async function getItemsWithImages(preparedReq, conn, id = null, lim = null, offs = null) {
-  async function getItems() {
-    try {
-      let res = await new Promise((res, rej) =>
-        conn.execute(preparedReq, [id], (err, results) =>
-          err ? rej(err) : res(results)
-        )
-      );
-      return res;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  async function getImages() {
-    try {
-      let res = await new Promise((res, rej) =>
-        conn.execute(`SELECT * FROM images`, (err, results) =>
-          err ? rej(err) : res(results)
-        )
-      );
-      return res;
-    } catch (err) {
-      return err;
-    }
-  }
-
-  const items = await getItems();
-  const images = await getImages();
-
-  items.map((item) => {
-    let imgs = images.filter((img) => img.id_item === item.id);
-    let newImgsArr = imgs.map((el) => {
-      return {id: el.id, img: el.img};
-    });
-    item.images = newImgsArr;
-  });
-
-  return items;
-}
-
+import { getItems, getItemsWithImages, connect, disconnect } from '../utils/index.js';
+ 
 export const getAllItems = async (req, res) => {
-  try {
+  try {   
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
+    
     const request = `SELECT items.*,                    
                         categories.name AS category,
                         colors.name AS color,
+                        subcategories.name AS subcategory,
                         sets.name AS item_set,
                         cut.name AS cut,
                         origin.name AS origin,
                         clarity.name AS clarity,
-                        treatment.name AS treatment
+                        treatment.name AS treatment,
+                        available.name AS availability,
+                        is_onsale.name AS onsale
                         FROM items 
                         JOIN categories on items.id_category = categories.id
-                        join colors on items.id_color = colors.id
-                        join sets on items.id_set = sets.id
-                        join cut on items.id_cut = cut.id
-                        join origin on items.id_origin = origin.id
-                        join clarity on items.id_clarity = clarity.id
-                        join treatment on items.id_treatment = treatment.id`;
-
-    const items = await getItemsWithImages(request, connection);
-    res.json(items);
-
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
-  } catch (err) {
-    res.json(err);
-  }
-  
-};
-
-export const getCarouselItems = async (req, res) => {
-  try {
-    const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
-
-    const request = `SELECT items.*,                    
-                        categories.name AS category,
-                        colors.name AS color,
-                        sets.name AS item_set,
-                        cut.name AS cut,
-                        origin.name AS origin,
-                        clarity.name AS clarity,
-                        treatment.name AS treatment
-                        FROM items 
-                        JOIN categories on items.id_category = categories.id
+                        JOIN subcategories on items.id_subcategory = subcategories.id
                         join colors on items.id_color = colors.id
                         join sets on items.id_set = sets.id
                         join cut on items.id_cut = cut.id
                         join origin on items.id_origin = origin.id
                         join clarity on items.id_clarity = clarity.id
                         join treatment on items.id_treatment = treatment.id
-                        ORDER BY added DESC
-                        LIMIT 15`;
+                        join available on items.id_availability = available.id
+                        join is_onsale on items.id_is_onsale = is_onsale.id
+                        ORDER BY id ASC`;
 
     const items = await getItemsWithImages(request, connection);
     res.json(items);
+    
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
+  }
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+};
+
+export const getCarouselItems = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `SELECT items.*,                    
+                        categories.name AS category,
+                        colors.name AS color,
+                        subcategories.name AS subcategory,
+                        sets.name AS item_set,
+                        cut.name AS cut,
+                        origin.name AS origin,
+                        clarity.name AS clarity,
+                        treatment.name AS treatment,
+                        available.name AS availability,
+                        is_onsale.name AS onsale
+                        FROM items 
+                        JOIN categories on items.id_category = categories.id
+                        JOIN subcategories on items.id_subcategory = subcategories.id
+                        join colors on items.id_color = colors.id
+                        join sets on items.id_set = sets.id
+                        join cut on items.id_cut = cut.id
+                        join origin on items.id_origin = origin.id
+                        join clarity on items.id_clarity = clarity.id
+                        join treatment on items.id_treatment = treatment.id
+                        join available on items.id_availability = available.id
+                        join is_onsale on items.id_is_onsale = is_onsale.id
+                        ORDER BY added DESC
+                        LIMIT 6`;
+
+    const items = await getItemsWithImages(request, connection);
+    res.json(items);
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -135,45 +82,36 @@ export const getCarouselItems = async (req, res) => {
 export const getAllGemsByCat = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT items.*,                    
                         categories.name AS category,
                         colors.name AS color,
+                        subcategories.name AS subcategory,
                         sets.name AS item_set,
                         cut.name AS cut,
                         origin.name AS origin,
                         clarity.name AS clarity,
-                        treatment.name AS treatment
+                        treatment.name AS treatment,
+                        available.name AS availability,
+                        is_onsale.name AS onsale
                         FROM items 
                         JOIN categories on items.id_category = categories.id
+                        JOIN subcategories on items.id_subcategory = subcategories.id
                         join colors on items.id_color = colors.id
                         join sets on items.id_set = sets.id
                         join cut on items.id_cut = cut.id
                         join origin on items.id_origin = origin.id
                         join clarity on items.id_clarity = clarity.id
                         join treatment on items.id_treatment = treatment.id
-                        WHERE id_category = ?`;
-    const id_cat = req.params.id;
+                        join available on items.id_availability = available.id
+                        join is_onsale on items.id_is_onsale = is_onsale.id
+                        WHERE id_category = ?`;    
 
-    const items = await getItemsWithImages(request, connection, id_cat);
-
+    const items = await getItemsWithImages(request, connection, req.params.id);
     res.json(items);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
@@ -182,14 +120,7 @@ export const getAllGemsByCat = async (req, res) => {
 export const getOneGem = async (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
-
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    connect(connection);
 
     const request = `SELECT items.*,                    
                         categories.name AS category,
@@ -218,15 +149,63 @@ export const getOneGem = async (req, res) => {
     const items = await getItemsWithImages(request, connection, id);
     res.json(items[0]);
 
-    connection.end((err, conn) => {
-      if (err) {
-        console.error("Unable to close connection");
-      } else {
-        console.log("Connection closed");
-      }
-    });
+    disconnect(connection);
   } catch (err) {
     res.json(err);
   }
 };
 
+export const getGlossItems = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `SELECT glossarium.*,
+                      categories.name AS category
+                      FROM glossarium
+                      JOIN categories on glossarium.id_category = categories.id`;    
+
+    const items = await getItems(request, connection);
+    res.json(items);
+
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
+  }
+};
+
+export const getOneGlossItem = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `SELECT glossarium.*,
+                      categories.name AS category
+                      FROM glossarium
+                      JOIN categories on glossarium.id_category = categories.id
+                      WHERE glossarium.id = ?`;    
+
+    const items = await getItems(request, connection, [req.params.id]);
+    res.json(items[0]);
+
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
+  }
+};
+
+export const getDescription = async (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `SELECT description FROM ${req.params.table} WHERE id = ?`;
+
+    const items = await getItems(request, connection, [req.params.id]);
+    res.json(items[0].description);
+
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
+  }
+};

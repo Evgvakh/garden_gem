@@ -10,7 +10,7 @@
             <button class="edit-table__button" @click="setTable($event, 'treatments', 'treatment')">Treatments</button>
             <button class="edit-table__button" @click="setTable($event, 'clarities', 'clarity')">Clarities</button>
         </div>
-        <Table v-if="this.type !== ''" :type="type" :dbField="field" />
+        <Table v-if="this.type !== ''" :type="type" :dbTable="field" />
     </div>
 </template>
 
@@ -31,14 +31,14 @@ export default {
     methods: {
         setTable(e, url, dbField) {
             this.type = url,
-                this.field = dbField
+            this.field = dbField
             document.querySelectorAll('.edit-table__button').forEach(el => {
                 if (el.classList.contains('button-active')) {
                     el.classList.remove('button-active')
                 }
             })
             e.target.classList.add('button-active')
-        }
+        },        
     }
 }
 </script>

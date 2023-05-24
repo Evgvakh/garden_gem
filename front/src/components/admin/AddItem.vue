@@ -93,7 +93,7 @@
             </div>
             <div class="textareas-group">
                 <label for="video">Video link <span>(ссылка на  видео)</span></label>
-                <textarea name="" id="video" cols="30" rows="1" v-model="video"></textarea>
+                <textarea name="" id="video" cols="30" rows="3" v-model="video"></textarea>
                 <button v-if="menuType == 'edit'" @click.prevent="editOneField('video', this.video, this.gem.id)">Edit</button>
             </div>
         </div>

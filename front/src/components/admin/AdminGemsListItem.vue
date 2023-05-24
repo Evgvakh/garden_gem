@@ -1,7 +1,6 @@
 <template>
     <div class="list-item__main">
-        <div class="list-item__wrapper">
-            
+        <div class="list-item__wrapper">            
             <div class="list-item__text">
                 <div class="list-item__text-item">
                     <p><span class="text-item__span">ID:</span> {{ gem.id }}</p>

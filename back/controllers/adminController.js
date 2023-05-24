@@ -1,24 +1,15 @@
 import mysql from "mysql2";
 import { dbParams } from "../DB/index.js";
-
-export const testAdd = (req, res) => {
-  console.log(req.body.cat);
-  res.json(req.body);
-}
+import { connect, disconnect } from "../utils/index.js";
 
 export const addItem = (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
+    connect(connection);
 
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
+    let date = new Date().toISOString().slice(0, 19).replace("T", " ");
     const request =
-      "INSERT INTO items (name, id_category, id_subcategory, id_color, id_origin, id_set, id_cut, description, price, sale_price, weight, video, id_treatment, id_clarity, id_availability, id_is_onsale) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO items (name, id_category, id_subcategory, id_color, id_origin, id_set, id_cut, description, price, sale_price, weight, video, id_treatment, id_clarity, id_availability, id_is_onsale, added) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.execute(
       request,
       [
@@ -37,7 +28,8 @@ export const addItem = (req, res) => {
         req.body.treatment,
         req.body.clarity,
         req.body.avail,
-        req.body.sale
+        req.body.sale,
+        date
       ],
       function (err, results, fields) {
         if (err) {
@@ -49,6 +41,7 @@ export const addItem = (req, res) => {
         }
       }
     );
+    disconnect(connection);
   } catch (err) {
     console.error(err);
   }
@@ -57,16 +50,11 @@ export const addItem = (req, res) => {
 export const addImgs = (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
+    connect(connection);
 
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
     const request =
       "INSERT INTO images (id_item, img) VALUES (?, ?)";
+    
     connection.execute(
       request,
       [
@@ -83,6 +71,7 @@ export const addImgs = (req, res) => {
         }
       }
     );
+    disconnect(connection);
   } catch (err) {
     console.error(err);
   }
@@ -91,15 +80,10 @@ export const addImgs = (req, res) => {
 export const addCertificate = (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
+    connect(connection);
 
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
     const request = "UPDATE items SET certificate = ? WHERE id = ?";
+
     connection.execute(
       request,
       [req.body.imgUrl, req.body.item_id],
@@ -113,6 +97,8 @@ export const addCertificate = (req, res) => {
         }
       }
     );
+
+    disconnect(connection);
   } catch (err) {
     console.error(err);
   }
@@ -121,29 +107,224 @@ export const addCertificate = (req, res) => {
 export const deleteImg = (req, res) => {
   try {
     const connection = mysql.createConnection(dbParams);
+    connect(connection);
+        
+    const request = "DELETE FROM images WHERE id = ?";
 
-    connection.connect(function (err) {
-      if (err) {
-        return console.error("Error: " + err.message);
-      } else {
-        console.log("Connected to DB");
-      }
-    });
-    const request = "DELETE FROM images WHER id = ?";
     connection.execute(
       request,
-      [req.body.id],
+      [req.params.id],
       function (err, results, fields) {
         if (err) {
           res.send(err);
         } else {
           res.send({
             Message: results,
+            Fields: fields
           });
         }
       }
     );
+
+    disconnect(connection);
   } catch (err) {
     console.error(err);
+  }
+};
+
+export const deleteCert = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = "UPDATE items SET certificate = '' WHERE id = ?";
+
+    connection.execute(
+      request,
+      [req.params.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteItem = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = "DELETE FROM items WHERE id = ?";
+
+    connection.execute(
+      request,
+      [req.params.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+    
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const editOneField = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const date = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const request = `UPDATE items SET ${req.params.type} = ?, updated = ? WHERE id = ?`;
+    
+    connection.execute(
+      request,
+      [req.body.field, date, req.body.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export const addFieldToTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `INSERT INTO ${req.params.type} (name) VALUES (?)`;
+
+    connection.execute(
+      request,
+      [req.body.field],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export const editFieldOfTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `UPDATE ${req.params.type} SET ${req.params.field} = ? WHERE id = ?`;
+
+    connection.execute(
+      request,
+      [req.body.text, req.body.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+    
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteFieldFromTable = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+    
+    const request = `DELETE FROM ${req.params.type} WHERE id = ?`;
+
+    connection.execute(
+      request,
+      [req.params.id],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    disconnect(connection);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const addGlossItem = (req, res) => {
+  try {
+    const connection = mysql.createConnection(dbParams);
+    connect(connection);
+
+    const request = `INSERT INTO glossarium (title, id_category, text) VALUES (?, ?, ?)`;
+    console.log(req.body.title, req.body.id_category, req.body.text);
+    connection.execute(
+      request,
+      [req.body.title, req.body.id_category, req.body.text],
+      function (err, results, fields) {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send({
+            Message: results,
+            Fields: fields,
+          });
+        }
+      }
+    );
+
+    disconnect(connection);
+  } catch (err) {
+    res.json(err);
   }
 };

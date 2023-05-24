@@ -31,6 +31,8 @@ import { faYoutube, faTelegram } from "@fortawesome/free-brands-svg-icons";
 import Image from "primevue/image";
 import "primeicons/primeicons.css";
 
+import Editor from "primevue/editor";
+
 const app = createApp(App);
 
 app.component("Button", Button);
@@ -48,6 +50,8 @@ app.component("ConfirmDialog", ConfirmDialog);
 app.component("ConfirmationService", ConfirmationService);
 app.component("Toast", Toast);
 app.component("ConfirmPopup", ConfirmPopup);
+
+app.component("Editor", Editor);
 
 library.add(
   faCheck,
@@ -67,7 +71,7 @@ app
   .use(router)
   .use(ConfirmationService)
   .use(PrimeVue)
-  .use(ToastService)
+  .use(ToastService)  
   .use(Quasar, {
     plugins: {},
   })

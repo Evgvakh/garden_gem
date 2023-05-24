@@ -69,7 +69,7 @@ export default {
     position: absolute;
     top: -62%;
     right: -46%;
-    color: #563838;  
+    color: #967373;  
     transition: all .2s ease-in;
 }
 

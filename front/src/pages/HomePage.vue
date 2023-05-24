@@ -103,8 +103,7 @@ video {
     z-index: 30;
 }
 .content-container__img h2 {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    /* font-family: 'PT Serif', serif; */
+    font-family: 'M PLUS Rounded 1c', sans-serif;    
     text-align: center;
     font-size: 48px;
     line-height: 1em;    
@@ -163,7 +162,7 @@ span.line.line-min {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background-color: #121212b6;
+    background-color: #121212cc;
     z-index: 20;
 }
 

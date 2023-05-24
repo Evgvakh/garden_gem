@@ -2,15 +2,16 @@
     <div class="container">
         <Header v-model="searchQuery" placeholder="Find your gem by name" :isSearchNeeded="true" />
         <div class="recently_added">
+            <div class="carousel_back"></div>            
             <ProgressSpinner v-if="isLoading" class="progress-spinner" 
-                strokeWidth="5" fill="var(--surface-ground)" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+                strokeWidth="5" fill="var(--surface-ground)" animationDuration="1.7s" aria-label="Custom ProgressSpinner" />
             <h3 v-if="!isLoading">Recently added</h3>
             <Carousel v-if="!isLoading" :value="items" :numVisible="4" :numScroll="1" :responsiveOptions="responsiveOptions"
-                circular :autoplayInterval="4000">
-                <template #item="slotProps">
-                    <div class="item text-center">
-                        <div class="item__img"
-                            :style="{ backgroundImage: slotProps.data.titleImg.length > 0 ? `url(http://localhost:8081/${slotProps.data.titleImg})` : 'none' }">
+                circular :autoplayInterval="7000">
+                <template #item="slotProps" style="border-radius: 10px;">
+                    <div class="item text-center">                        
+                        <div class="item__img" 
+                            :style="{ backgroundImage: slotProps.data.titleImg.length > 0 ? `url(http://localhost:8081/${slotProps.data.titleImg})` : 'none' }">                            
                             <div class="item__text">
                                 <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
                                     slotProps.data.color }} {{ slotProps.data.category }}</a></h4>
@@ -20,19 +21,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- <div class="item__img"
-                            :style="{ backgroundImage: `url(https://gemgarden.herokuapp.com/${slotProps.data.images[0]["img"] ? slotProps.data.images[0]["img"] : uploads/img/IMG_0727.jpg})` }">
-                            <div class="item__text">
-                                <h4><a style="cursor: pointer;" @click="$router.push(`/collection/${slotProps.data.id}`)">{{
-                                    slotProps.data.color }} {{ slotProps.data.category }}</a></h4>
-                                <div class="price_weight">
-                                    <h6>${{ (slotProps.data.price * slotProps.data.weight).toFixed(0) }}</h6>
-                                    <h6 class="weight">{{ slotProps.data.weight.toFixed(2) }} ct.</h6>
-                                </div>
-                            </div>
-                        </div> -->
-
+                        <div class="border"></div>                       
                     </div>
                 </template>
             </Carousel>
@@ -155,22 +144,17 @@ export default {
             checkboxButtonTextIndex: false,
             responsiveOptions: [
                 {
-                    breakpoint: '1524px',
+                    breakpoint: '1654px',
                     numVisible: 3,
                     numScroll: 1
                 },
                 {
-                    breakpoint: '1230px',
-                    numVisible: 3,
-                    numScroll: 1
-                },
-                {
-                    breakpoint: '1100px',
+                    breakpoint: '1290px',
                     numVisible: 2,
-                    numScroll: 2
-                },
+                    numScroll: 1
+                },                
                 {
-                    breakpoint: '631px',
+                    breakpoint: '720px',
                     numVisible: 1,
                     numScroll: 1
                 }
@@ -366,35 +350,33 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Lilita+One&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@400;700&display=swap');
 @import 'primeicons/primeicons.css';
+
 h3 {
     line-height: 1em;
-    margin: 4em 0 0.6em 0;
+    margin: 3em 0 0 0;
     padding: 0;
     text-align: center;
-    font-size: 24px;    
+    font-size: 32px;
+    font-weight: 700;    
     font-family: 'Baloo Tamma 2', cursive;
-    animation: changeColor 1s infinite;
+    animation: changeColor 2s infinite;
 }
 
 @keyframes changeColor {
     0% {
-        color: rgba(73,153,156,1);
-    }
+        color: rgb(0, 252, 176);
+    }  
 
     25% {
-        color: #56383896;
+        color: rgb(253, 255, 117);
     }
 
     50% {
-        color: rgba(73,153,156,1)
-    }
+        color: rgb(36, 101, 240);
+    }  
 
     75% {
-        color: #ca564e3b;
-    }
-
-    100% {
-        color: black;
+        color: rgb(253, 255, 117);
     }
 }
 
@@ -409,10 +391,12 @@ h4 a {
     font-family: 'PT Serif', serif;
     font-size: 22px;
     text-transform: capitalize;
+    margin-bottom: 2em;
+    letter-spacing: 1px;
 }
 
 h4 a:hover {
-    font-weight: 500;
+    color: antiquewhite;
 }
 
 * p {
@@ -429,6 +413,10 @@ h4 a:hover {
     padding: 0;
 }
 
+.container h4 {
+    margin-bottom: 0.7em;
+}
+
 .container {
     margin: 0 auto;
 }
@@ -438,58 +426,80 @@ h4 a:hover {
     margin: 0 auto;
 }
 
-.recently_added {
-    background-color: rgb(253, 253, 253);
-    margin-top: 12vh;
+.recently_added {    
+    background-image: url('http://localhost:8081/uploads/assets/photo-1617957743103-310accdfb999.jpg');    
+    background-position: center center;
+    background-size: cover;
+    padding: 2em;
+    position: relative; 
+}
+
+.carousel_back {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: #1fd1692f;
+    filter: saturate(2);
 }
 
 .item {
-    padding: 0;
-    margin: 0 2em;
-    background-color: #563838;
+    padding: 1px;
+    margin: 2em;
+    background-color: transparent;
     height: 230px;
-    
-}
-
-.p-carousel-item {
-    border-radius: 20px;
-}
-
-.item__img {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
     position: relative;
+    -webkit-box-shadow:  0px 0px 12px 1px #000000;
+    box-shadow:  0px 0px 12px 1px #000000;
+    border-radius: 10px;
+}
+
+.border {
+    position: absolute;
+    background: linear-gradient(200deg, rgba(197, 236, 88, 0.38) 0%, rgba(73,153,156,0.3) 75%);;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 8;
+    border-radius: 10px;    
+}
+
+.item__img {    
+    width: 100%;
+    height: 100%;    
+    background-size: cover;
+    z-index: 10;    
+    background-position: center center;
+    position: relative;    
     overflow: hidden;
-    -webkit-box-shadow: inset 0px 0px 56px -0px #000000;
-    box-shadow: inset 0px 0px 56px 0px #000000;
-    
+    border-radius: 10px;    
 }
 
 .item__text {
-    padding: 4em 0.2em;
-    position: absolute;
-    top: 100%;
-    opacity: 0;
-    background: rgb(0, 0, 0);
-    background: linear-gradient(170deg, rgba(0, 0, 0, 0.541) 35%, rgba(0, 0, 0, 0.842) 68%);
+    padding: 3em 0.2em;
+    position: absolute;    
+    top: 55%;
+    opacity: 1;
+    border-radius: 10px;
+    border: 3px solid transparent;    
     width: 100%;
-    height: 100%;
-    transition: all .4s ease-out;
-    border-top: 2px solid white;
+    height: 100%;    
+    transition: all .4s ease-out;         
 }
 
 .item__img:hover .item__text {
     top: 0;
     opacity: 1;
+    border: 3px solid rgb(255, 255, 255);
+    background: linear-gradient(170deg, rgba(0, 0, 0, 0.441) 35%, rgba(0, 0, 0, 0.742) 68%);
 }
 
 .price_weight {
     display: flex;
-    justify-content: space-between;
-    width: 65%;
+    justify-content: center;
+    /* width: 75%; */
     margin: 0 auto;
+}
+
+.price_weight .weight {
+    margin-left: 2em;
 }
 
 .cats {
@@ -497,8 +507,7 @@ h4 a:hover {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;    
-    background-color: rgba(73, 153, 156, 0.100);
-    
+    background-color: rgba(73, 153, 156, 0.100);    
 }
 
 .cat_button {
@@ -511,9 +520,8 @@ h4 a:hover {
     font-weight: 500;
     font-size: 14px;
     width: fit-content;
-    min-width: 19%;
-    margin-right: 0.3em;
-    margin-bottom: 1.5em;
+    min-width: 19%;    
+    margin: 0.7em 0 0.7em 0.3em;
     padding: 0.2em 0.5em;
     cursor: pointer;
     transition: color .3s ease-out;
@@ -546,7 +554,7 @@ h4 a:hover {
     border-top: 1px solid rgba(168, 149, 149, 0.329);
     -webkit-box-shadow: 0px -1px 21px -11px #787878;
     box-shadow: 0px -1px 21px -11px #787878;
-    padding: 1em 1.5em 3em 1.5em;
+    padding: 2em 1.5em 3em 1.5em;
     display: flex;
     position: relative;
 }
@@ -575,7 +583,7 @@ h4 a:hover {
     font-size: 20px;
     font-weight: 700;
     line-height: 1em;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.3em;
 }
 
 .filter {

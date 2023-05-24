@@ -9,7 +9,7 @@
         <div class="text-block">
             <h4>
                 <a @click="$router.push(`/collection/${gem.id}`)"><span class="start">{{ gem.color }} {{ gem.category
-                }}</span>, {{ gem.cut }} cut, {{ gem.weight.toFixed(2) }} ct., {{ gem.origin }}</a>
+                }}</span>, {{ gem.cut }} cut, {{ gem.weight.toFixed(2) }} ct.<a v-if="gem.origin != 'unknown'">, {{ gem.origin }}</a></a>
             </h4>
             <div class="price_weight">
                 <div v-if="gem.onsale == 'no'">

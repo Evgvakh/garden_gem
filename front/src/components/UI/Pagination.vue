@@ -56,23 +56,19 @@ export default {
 </script>
 
 <style scoped>
-.pagination-main.top {
-    /* background-color: #531a16e7; */
-    /* background: rgb(36,159,163);
-    background: linear-gradient(169deg, rgba(36,159,163,1) 19%, rgb(43, 144, 148) 46%, rgba(73,153,156,1) 74%); */
+.pagination-main.top {    
     background: rgb(73,153,156);
     background: linear-gradient(90deg, rgba(73, 153, 156, 0.854) 20%, rgba(163,211,111,0.8799894957983193) 50%, rgba(73, 153, 156, 0.854) 80%);
     -webkit-box-shadow: inset 0px 0px 21px -15px #000000;
     box-shadow: inset 0px 0px 21px -15px #000000;
-    border-radius: 3px;
-    /* margin-top: 2em; */
+    border-radius: 2px;    
 }
 
 .top .pagination__list-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.2em 2.5em;
+    padding: 0.2em 1.5em;
 }
 
 .top .pagination__list-wrapper ul {

@@ -1,7 +1,7 @@
 <template>
     <Header v-model="searchQuery" placeholder="Search your gem here" :isSearchNeeded="false" :isCategory="true" :category="categoryName" :subCategory="subCategoryName" />    
     <div v-if="!isLoading" class="category-description__main" :style="{backgroundImage: `url(http://localhost:8081/uploads/assets/360_F_196924770_obZVTtzRj4lofwUBRuXfa50rj9zbosZT.jpg)`}">
-        <p :style="{textShadow: '10px 12px 3px rgba(18,18,18,0.11)'}">{{ description }}</p>
+        <p id="descriptionText" :style="{textShadow: '10px 12px 3px rgba(18,18,18,0.16)'}" v-html="description"></p>
         <button @click="$router.push('/glossarium')">Learn more about <strong>{{ subCategoryName || categoryName }}</strong> in our Glossarium</button>
     </div>
     <div class="container">        
@@ -109,8 +109,8 @@ export default {
                let res = await axios.get(`/descr/categories/${this.categoryNumber}`)
                data = res.data
             }
-            this.description = data;            
-            this.isLoading = false;            
+            this.description = data;
+            this.isLoading = false; 
         },
 
         setCategoryNumber() {
@@ -318,7 +318,7 @@ h4 a:hover {
 }
 
 .category-description__main {
-    padding: 3em;    
+    padding: 4em;    
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;    
